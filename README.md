@@ -1,1 +1,0 @@
-# Arduino-Based-Smart-Watering-System-
