@@ -213,8 +213,8 @@
 
     .gif-wrapper:hover img,
     .gif-wrapper1:hover img
-    .gif-wrapper2:hover
-    .gif-wrapper3:hover {
+    .gif-wrapper2:hover img
+    .gif-wrapper3:hover img {
       transform: scale(1.7);
     }
 
@@ -358,35 +358,74 @@
     }
 
     @media (max-width: 768px) {
-      .hero {
-        flex-direction: column;
-        align-items: center;
+      header {
+        height: auto;
+        padding: 2rem 1rem;
+        border-radius: 0;
       }
 
-      .report-section, .gif-section {
+      .header-with-images {
+        flex-direction: column;
+        padding: 0;
+        gap: 1.5rem;
+      }
+
+      .side-image {
+        width: 120px;
+      }
+
+      .heading-text h1 {
+        font-size: 1.8rem;
+      }
+
+      .hero {
+        flex-direction: column;
+        gap: 2rem;
+        padding: 2rem 1rem;
+      }
+
+      .report-section,
+      .gif-section {
         width: 100%;
         padding: 1rem;
       }
 
       .gif-wrapper,
-      .gif-wrapper1 {
+      .gif-wrapper1,
+      .gif-wrapper2,
+      .gif-wrapper3 {
         width: 90vw;
-        max-width: 300px;
         height: auto;
       }
 
       .gif-wrapper img,
-      .gif-wrapper1 img {
+      .gif-wrapper1 img,
+      .gif-wrapper2 img,
+      .gif-wrapper3 img {
         width: 100%;
-        transform: scale(1.3);
+        height: auto;
+        transform: scale(1);
         left: 0;
+        top: 0;
       }
 
       .gif-wrapper:hover img,
-      .gif-wrapper1:hover img {
-        transform: scale(1.4);
+      .gif-wrapper1:hover img,
+      .gif-wrapper2:hover img,
+      .gif-wrapper3:hover img {
+        transform: scale(1);
+      }
+
+      .image-gallery {
+        gap: 10px;
+      }
+
+      .image-container {
+        width: 45vw;
+        height: 45vw;
       }
     }
+
   </style>
 </head>
 <body>
