@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EcoPal | Smart Plant Care</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #e3f2fd, #e8f5e9);
+      color: #2e4a4f;
+      text-align: center;
+      transition: background 0.5s ease;
+    }
+
+    .page-border {
+      max-width: 98vw;
+      margin: 10px auto;
+      padding: 10px;
+      border: 8px solid #a5d6a7;
+      border-radius: 30px;
+      box-shadow: 0 0 40px rgba(46, 74, 79, 0.2);
+      background-color: #ffffff;
+      transition: box-shadow 0.3s ease;
+    }
+
+    .page-border:hover {
+      box-shadow: 0 0 60px rgba(46, 74, 79, 0.4);
+    }
+
+    header {
+      background-color: #4caf50;
+      height: 60vh;
+      border-radius: 70px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      text-align: center;
+      border-bottom: 10px solid #3e8e41;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    header h1 {
+      font-family: 'Roboto', sans-serif;
+      font-size: 2.8rem;
+      margin: 0;
+      color: #ffffff;
+      text-shadow: 1px 1px 2px #4caf50;
+      animation: fadeInDown 1s ease-out;
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+
+
+
+    header sub {
+      font-size: 1.2rem;
+      color: #f1f1f1;
+    }
+
+    header p {
+      margin-top: 1rem;
+      font-size: 1.2rem;
+      color: #f1f1f1;
+    }
+
+    .header-with-images {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      width: 100%;
+      padding: 0 2rem;
+      box-sizing: border-box;
+      flex-wrap: wrap;
+    }
+
+    .side-image {
+      width: 200px;
+      height: auto;
+      border: 3px solid #a5d6a7;
+      border-radius: 300px;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+      background-color: #dcedc8;
+      transition: transform 0.3s ease;
+    }
+
+    .side-image:hover {
+      transform: scale(1.05);
+    }
+
+    .heading-text {
+      text-align: center;
+      flex: 1;
+      min-width: 250px;
+    }
+
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 2rem;
+      flex-wrap: wrap;
+      padding: 3rem 1rem;
+    }
+
+    .report-section {
+      width: 50%;
+      padding: 2rem;
+      box-sizing: border-box;
+    }
+
+    .gif-section {
+      width: 45%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .gif-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .gif-wrapper, .gif-wrapper1, .gif-wrapper2 ,.gif-wrapper3{
+      overflow: hidden;
+      border-radius: 20px;
+      border: 5px solid #81c784;
+      box-shadow: 0 0 25px #81c784, 0 0 50px #2e4a4f;
+      background-color: #ffffff;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .gif-wrapper:hover, .gif-wrapper1:hover ,.gif-wrapper2:hover,.gif-wrapper3:hover{
+      transform: scale(1.05);
+      box-shadow: 0 0 35px #81c784, 0 0 60px #2e4a4f;
+    }
+
+    .gif-wrapper {
+      width: 220px;
+      height: 220px;
+    }
+
+    .gif-wrapper1 {
+      width: 350px;
+      height: 220px;
+    }
+
+    .gif-wrapper2 {
+      width: 350px;
+      height: 220px;
+    }
+
+    .gif-wrapper3 {
+      width: 350px;
+      height: 220px;
+    }
+
+
+    .gif-wrapper img, .gif-wrapper1 img ,.gif-wrapper2 img,.gif-wrapper3 img {
+      display: block;
+      position: relative;
+      transform: scale(1.5);
+      transition: transform 0.5s ease;
+    }
+
+    .gif-wrapper img {
+      width: 400px;
+      left: -30px;
+      top: 0;
+    }
+
+    .gif-wrapper1 img {
+      width: 420px;
+      left: 0;
+      top: 0;
+    }
+
+
+    .gif-wrapper2 img {
+      width: 420px;
+      left: 0;
+      top: 0;
+    }
+
+    .gif-wrapper3 img {
+      width: 420px;
+      left: 100px;
+      top: -50px;
+      right: -100px;
+      bottom: 0px;
+    }
+
+    .gif-wrapper:hover img,
+    .gif-wrapper1:hover img
+    .gif-wrapper2:hover img
+    .gif-wrapper3:hover img {
+      transform: scale(1.7);
+    }
+
+    .gif-label {
+      margin-top: 10px;
+      font-size: 1.3rem;
+      color: #2e4a4f;
+      font-weight: 500;
+    }
+
+    .report-theme {
+      background-color: #e8f5e9;
+      padding: 2rem;
+      border-radius: 30px;
+      box-shadow: 0 0 20px rgba(46, 74, 79, 0.1);
+      max-width: 900px;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      justify-content: left;
+      transition: background-color 0.3s ease;
+    }
+
+    .report-theme:hover {
+      background-color: #c8e6c9;
+    }
+
+    .report-theme h2 {
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+      color: #2e4a4f;
+    }
+
+    .report-theme p {
+      font-size: 1rem;
+      color: #455a64;
+      margin-bottom: 1.5rem;
+    }
+
+    .cta-button {
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
+      color: white;
+      background-color: #3e8e41;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .cta-button:hover {
+      background-color: #2e7d32;
+    }
+
+    footer {
+      margin-top: 3rem;
+      padding: 1rem;
+      background-color: #c8e6c9;
+      color: #2e4a4f;
+      font-weight: bold;
+    }
+
+    footer a {
+      color: #2e4a4f;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    footer a:hover {
+      color: #388e3c;
+    }
+
+    /* Styles for the image gallery */
+    .image-gallery {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-top: 30px;
+    }
+
+    .image-gallery .image-container {
+      width: 180px;
+      height: 180px;
+      overflow: hidden;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .image-gallery .image-container:hover {
+      transform: scale(1.1);
+    }
+
+    .image-gallery img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+      cursor: pointer;
+    }
+
+    .image-gallery img:hover {
+      transform: scale(1.05);
+    }
+
+    /* Lightbox styles */
+    #lightbox {
+      position: fixed;
+      z-index: 9999;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #lightbox img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 15px;
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+    }
+
+    #close-lightbox {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 40px;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+
+    #close-lightbox:hover {
+      color: #f44336;
+    }
+
+    @media (max-width: 768px) {
+      header {
+        height: auto;
+        padding: 2rem 1rem;
+        border-radius: 0;
+      }
+
+      .header-with-images {
+        flex-direction: column;
+        padding: 0;
+        gap: 1.5rem;
+      }
+
+      .side-image {
+        width: 120px;
+      }
+
+      .heading-text h1 {
+        font-size: 1.8rem;
+      }
+
+      .hero {
+        flex-direction: column;
+        gap: 2rem;
+        padding: 2rem 1rem;
+      }
+
+      .report-section,
+      .gif-section {
+        width: 100%;
+        padding: 1rem;
+      }
+
+      .gif-wrapper,
+      .gif-wrapper1,
+      .gif-wrapper2,
+      .gif-wrapper3 {
+        width: 350px;
+        height: 220px;
+        transform: translateX(-15px);
+      }
+
+      .gif-wrapper img {
+        width: 400px;
+        left: -30px;
+        top: 0;
+      }
+      .gif-wrapper1 img{
+        width: 420px;
+        left: 0;
+        top: 0;
+      }
+      .gif-wrapper2 img{
+        width: 420px;
+        left: 0;
+        top: 0;
+      }
+      .gif-wrapper3 img{
+        width: 420px;
+        left: 100px;
+        top: -50px;
+        right: -100px;
+        bottom: 0px;
+      }
+
+      .gif-wrapper:hover img,
+      .gif-wrapper1:hover img,
+      .gif-wrapper2:hover img,
+      .gif-wrapper3:hover img {
+        transform: scale(1.5);
+      }
+
+      .image-gallery {
+        gap: 10px;
+      }
+
+      .image-container {
+        width: 45vw;
+        height: 45vw;
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="page-border">
+  <header>
+    <div class="header-with-images">
+      <div style="display: flex; flex-direction: column; align-items: center;">
+        <img src="right-head1.png" alt="Leaf Image" class="side-image" />
+        <a href="https://www.linkedin.com/in/anuj-kumar-1365b535a/" target="_blank"
+           style="margin-top: 10px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; background-color: #e8f5e9; border: 2px solid #81c784; border-radius: 12px; box-shadow: 0 0 10px rgba(129, 199, 132, 0.3); transition: background-color 0.3s ease;"
+           onmouseover="this.style.backgroundColor='#c8e6c9';"
+           onmouseout="this.style.backgroundColor='#e8f5e9';">
+          <img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" alt="LinkedIn" width="20" height="20" />
+          <span style="font-size: 0.9rem; color: #2e4a4f;">Anuj Kumar</span>
+        </a>
+      </div>
+      <div class="heading-text">
+        <h1>Arduino-Based-Smart-Watering-System 🌱</h1>
+        <sub style="font-size: 1.2rem; color: #e0f2f1;">Built with ❤️ by Anuj & Team</sub>
+        <p style="margin-top: 1rem; font-size: 1.3rem;">Making plant care effortless with Arduino magic!</p>
+
+      </div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="report-section">
+      <div class="report-theme">
+        <h2>📘 Project Report: Automated Watering System</h2>
+        <p><strong>By:</strong> Anuj Kumar<br>
+           <strong>School:</strong> RPVV SEC 19<br>
+           <strong>Curriculum:</strong> Entrepreneur Mindset Curriculum (EMC)</p>
+
+        <p><strong>Introduction:</strong><br>
+          This project aims to solve a real-world problem — ensuring plants are watered even when we are not home.
+          I developed it as part of the EMC program, inspired by online automation videos and my interest in Arduino and electronics.
+        </p>
+
+        <p><strong>Objective:</strong><br>
+          To build a fully automatic watering system that:
+          <br>• Monitors soil moisture
+          <br>• Controls water flow using a servo motor
+          <br>• Indicates status via LEDs
+        </p>
+
+        <p><strong>Materials Used:</strong><br>
+          Arduino Uno, Soil Moisture Sensor, Servo Motor, Red & Green LEDs, Wiring, Water Valve & Pipe
+        </p>
+
+        <p><strong>Working Principle:</strong><br>
+          Moist soil conducts electricity — the sensor detects it, and Arduino rotates the servo 90° to shut the water supply (Green LED ON).
+          Dry soil doesn't conduct — sensor triggers Arduino to open the valve (Red LED ON). It’s fully automatic.
+        </p>
+
+        <p><strong>Inspiration & Learning:</strong><br>
+          The idea came from YouTube videos on automation. I explored Arduino deeply and learned how to code, use sensors,
+          and integrate electronics practically. EMC helped me bring this idea to life.
+        </p>
+
+        <p><strong>Conclusion:</strong><br>
+          A simple yet powerful solution for plant care using physics and technology. This project boosted my skills in innovation, coding, and electronics.
+        </p>
+      </div>
+    </div>
+
+    <div class="gif-section">
+      <div class="gif-container">
+        <div class="gif-wrapper">
+          <img src="single_plant.gif" alt="Single Plant GIF" />
+        </div>
+        <div class="gif-label">Single Plant</div>
+      </div>
+
+      <div class="gif-container">
+        <div class="gif-wrapper1">
+          <img src="multi_plant.gif" alt="Multiple Plants GIF" />
+        </div>
+        <div class="gif-label">Multiple Plants</div>
+      </div>
+
+
+      <div class="gif-container">
+        <div class="gif-wrapper2">
+          <img src="real-life demonstration.gif" alt="Real-Life demonstration GIF" />
+        </div>
+        <div class="gif-label">Real-Life demonstration</div>
+      </div>
+
+
+      <div class="gif-container">
+        <div class="gif-wrapper3">
+          <img src="codes.gif" alt="codes GIF" />
+        </div>
+        <div class="gif-label">CODES-Single,multiple plants</div>
+        <a href="plant_code.zip" download class="cta-button" style="margin-top: 10px;">⬇️ Download Codes</a>
+      </div>
+      
+    </div>
+  </section>
+
+  <div class="image-gallery">
+    <div class="image-container"><img src="image1_1.jpg" alt="Image 1" /></div>
+    <div class="image-container"><img src="image2_1.jpg" alt="Image 2" /></div>
+    <div class="image-container"><img src="image3_1.jpg" alt="Image 3" /></div>
+    <div class="image-container"><img src="image4.jpg" alt="Image 4" /></div>
+    <div class="image-container"><img src="image5.jpg" alt="Image 5" /></div>
+  </div>
+
+  <footer>
+    &copy; 2025 EcoPal | Designed with 💚 for plant lovers    
+  </footer>
+</div>
+
+<!-- Lightbox -->
+<div id="lightbox">
+  <span id="close-lightbox">&times;</span>
+  <img id="lightbox-img" src="" alt="Full Size Image" />
+</div>
+
+<script>
+  const lightbox = document.getElementById("lightbox");
+  const lightboxImg = document.getElementById("lightbox-img");
+  const closeBtn = document.getElementById("close-lightbox");
+
+  document.querySelectorAll(".image-gallery img").forEach(img => {
+    img.addEventListener("click", () => {
+      lightbox.style.display = "flex";
+      lightboxImg.src = img.src;
+      lightboxImg.alt = img.alt;
+    });
+  });
+
+  closeBtn.addEventListener("click", () => {
+    lightbox.style.display = "none";
+  });
+
+  lightbox.addEventListener("click", (e) => {
+    if (e.target !== lightboxImg) {
+      lightbox.style.display = "none";
+    }
+  });
+</script>
+
+</body>
+</html>

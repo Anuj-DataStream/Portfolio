@@ -1,587 +1,475 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+  <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
+  <script>
+    (function() {
+      emailjs.init("xlFs-dv2_g9a_6nuk"); // Replace with your actual public key
+    })();
+  </script>
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EcoPal | Smart Plant Care</title>
-
+  <title>Anuj Kumar | Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
   <style>
-    body {
+    :root {
+      --primary: #0f2027;
+      --secondary: #203a43;
+      --accent: #2c5364;
+      --text: #f0f0f0;
+      --card-bg: #1c1c1c;
+    }
+
+    * {
       margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #e3f2fd, #e8f5e9);
-      color: #2e4a4f;
-      text-align: center;
-      transition: background 0.5s ease;
+      padding: 0;
+      box-sizing: border-box;
+      scroll-behavior: smooth;
     }
 
-    .page-border {
-      max-width: 98vw;
-      margin: 10px auto;
-      padding: 10px;
-      border: 8px solid #a5d6a7;
-      border-radius: 30px;
-      box-shadow: 0 0 40px rgba(46, 74, 79, 0.2);
-      background-color: #ffffff;
-      transition: box-shadow 0.3s ease;
-    }
-
-    .page-border:hover {
-      box-shadow: 0 0 60px rgba(46, 74, 79, 0.4);
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to right, var(--primary), var(--accent));
+      color: var(--text);
+      line-height: 1.6;
     }
 
     header {
-      background-color: #4caf50;
-      height: 60vh;
-      border-radius: 70px;
+      padding: 20px 60px;
       display: flex;
-      flex-direction: column;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
-      color: white;
-      text-align: center;
-      border-bottom: 10px solid #3e8e41;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      background: var(--card-bg);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
     }
 
     header h1 {
-      font-family: 'Roboto', sans-serif;
-      font-size: 2.8rem;
-      margin: 0;
-      color: #ffffff;
-      text-shadow: 1px 1px 2px #4caf50;
-      animation: fadeInDown 1s ease-out;
+      font-size: 28px;
+      font-weight: 700;
     }
 
-    @keyframes fadeInDown {
-      from {
-        opacity: 0;
-        transform: translateY(-20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
+    nav a {
+      margin: 0 15px;
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
     }
 
-
-
-
-    header sub {
-      font-size: 1.2rem;
-      color: #f1f1f1;
-    }
-
-    header p {
-      margin-top: 1rem;
-      font-size: 1.2rem;
-      color: #f1f1f1;
-    }
-
-    .header-with-images {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 2rem;
-      width: 100%;
-      padding: 0 2rem;
-      box-sizing: border-box;
-      flex-wrap: wrap;
-    }
-
-    .side-image {
-      width: 200px;
-      height: auto;
-      border: 3px solid #a5d6a7;
-      border-radius: 300px;
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
-      background-color: #dcedc8;
-      transition: transform 0.3s ease;
-    }
-
-    .side-image:hover {
-      transform: scale(1.05);
-    }
-
-    .heading-text {
-      text-align: center;
-      flex: 1;
-      min-width: 250px;
+    nav a:hover {
+      color: #00ffd0;
     }
 
     .hero {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 2rem;
-      flex-wrap: wrap;
-      padding: 3rem 1rem;
-    }
-
-    .report-section {
-      width: 50%;
-      padding: 2rem;
-      box-sizing: border-box;
-    }
-
-    .gif-section {
-      width: 45%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2rem;
-    }
-
-    .gif-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .gif-wrapper, .gif-wrapper1, .gif-wrapper2 ,.gif-wrapper3{
-      overflow: hidden;
-      border-radius: 20px;
-      border: 5px solid #81c784;
-      box-shadow: 0 0 25px #81c784, 0 0 50px #2e4a4f;
-      background-color: #ffffff;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .gif-wrapper:hover, .gif-wrapper1:hover ,.gif-wrapper2:hover,.gif-wrapper3:hover{
-      transform: scale(1.05);
-      box-shadow: 0 0 35px #81c784, 0 0 60px #2e4a4f;
-    }
-
-    .gif-wrapper {
-      width: 220px;
-      height: 220px;
-    }
-
-    .gif-wrapper1 {
-      width: 350px;
-      height: 220px;
-    }
-
-    .gif-wrapper2 {
-      width: 350px;
-      height: 220px;
-    }
-
-    .gif-wrapper3 {
-      width: 350px;
-      height: 220px;
-    }
-
-
-    .gif-wrapper img, .gif-wrapper1 img ,.gif-wrapper2 img,.gif-wrapper3 img {
-      display: block;
-      position: relative;
-      transform: scale(1.5);
-      transition: transform 0.5s ease;
-    }
-
-    .gif-wrapper img {
-      width: 400px;
-      left: -30px;
-      top: 0;
-    }
-
-    .gif-wrapper1 img {
-      width: 420px;
-      left: 0;
-      top: 0;
-    }
-
-
-    .gif-wrapper2 img {
-      width: 420px;
-      left: 0;
-      top: 0;
-    }
-
-    .gif-wrapper3 img {
-      width: 420px;
-      left: 100px;
-      top: -50px;
-      right: -100px;
-      bottom: 0px;
-    }
-
-    .gif-wrapper:hover img,
-    .gif-wrapper1:hover img
-    .gif-wrapper2:hover img
-    .gif-wrapper3:hover img {
-      transform: scale(1.7);
-    }
-
-    .gif-label {
-      margin-top: 10px;
-      font-size: 1.3rem;
-      color: #2e4a4f;
-      font-weight: 500;
-    }
-
-    .report-theme {
-      background-color: #e8f5e9;
-      padding: 2rem;
-      border-radius: 30px;
-      box-shadow: 0 0 20px rgba(46, 74, 79, 0.1);
-      max-width: 900px;
+      padding: 100px 60px;
       text-align: left;
+    }
+
+    .hero h2 {
+      font-size: 48px;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      font-size: 20px;
+      color: #d4d4d4;
+    }
+
+    .hero-content {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .hero-text {
+      flex: 1;
+      max-width: 500px;
+      margin-right: 20px;
+      margin-left: 100px;
+    }
+
+    .hero-image {
+      flex: 1;
+      text-align: right;
+      max-width: 500px;
+      margin-right: 130px;
+      margin-left: 20px;
+    }
+
+    .hero-image img {
+      width: 100%;
+      max-width: 300px;
+      border-radius: 100px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    section {
+      padding: 80px 60px;
+    }
+
+    .section-title {
+      font-size: 36px;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .skills,
+    .projects {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease;
+      width: 300px;
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      color: #ccc;
+    }
+
+    form {
+      max-width: 600px;
+      margin: auto;
       display: flex;
       flex-direction: column;
-      justify-content: left;
-      transition: background-color 0.3s ease;
+      gap: 20px;
     }
 
-    .report-theme:hover {
-      background-color: #c8e6c9;
-    }
-
-    .report-theme h2 {
-      margin-bottom: 1rem;
-      font-size: 1.5rem;
-      color: #2e4a4f;
-    }
-
-    .report-theme p {
-      font-size: 1rem;
-      color: #455a64;
-      margin-bottom: 1.5rem;
-    }
-
-    .cta-button {
-      padding: 1rem 2rem;
-      font-size: 1.2rem;
-      color: white;
-      background-color: #3e8e41;
+    input,
+    textarea {
+      padding: 15px;
       border: none;
-      border-radius: 30px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
+      border-radius: 8px;
+      font-size: 16px;
     }
 
-    .cta-button:hover {
-      background-color: #2e7d32;
+    button {
+      padding: 15px;
+      background: #00ffd0;
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #00bfa6;
     }
 
     footer {
-      margin-top: 3rem;
-      padding: 1rem;
-      background-color: #c8e6c9;
-      color: #2e4a4f;
-      font-weight: bold;
+      text-align: center;
+      padding: 30px;
+      background: var(--card-bg);
+      font-size: 14px;
+    }
+    .highlight0{
+      color: #a592f1;
+    }
+    .highlight{
+      color: #38bdf8;
     }
 
-    footer a {
-      color: #2e4a4f;
-      text-decoration: none;
-      transition: color 0.3s ease;
-    }
-
-    footer a:hover {
-      color: #388e3c;
-    }
-
-    /* Styles for the image gallery */
-    .image-gallery {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      flex-wrap: wrap;
-      margin-top: 30px;
-    }
-
-    .image-gallery .image-container {
-      width: 180px;
-      height: 180px;
-      overflow: hidden;
-      border-radius: 15px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-      transition: transform 0.3s ease;
-    }
-
-    .image-gallery .image-container:hover {
-      transform: scale(1.1);
-    }
-
-    .image-gallery img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.3s ease;
-      cursor: pointer;
-    }
-
-    .image-gallery img:hover {
-      transform: scale(1.05);
-    }
-
-    /* Lightbox styles */
-    #lightbox {
-      position: fixed;
-      z-index: 9999;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.9);
-      display: none;
-      justify-content: center;
-      align-items: center;
-    }
-
-    #lightbox img {
-      max-width: 90%;
-      max-height: 90%;
-      border-radius: 15px;
-      box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
-    }
-
-    #close-lightbox {
-      position: absolute;
-      top: 20px;
-      right: 30px;
-      font-size: 40px;
-      color: white;
-      cursor: pointer;
-      font-weight: bold;
-      transition: color 0.3s ease;
-    }
-
-    #close-lightbox:hover {
-      color: #f44336;
-    }
-
+    /* Responsive tweaks */
     @media (max-width: 768px) {
+
+      header,
+      section {
+        padding: 20px;
+      }
+
+      .hero h2 {
+        font-size: 36px;
+      }
+
+      .hero-content {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .hero-image {
+        text-align: center;
+      }
+
+      .section-title {
+        font-size: 28px;
+      }
+
+      .skills,
+      .projects {
+        grid-template-columns: 1fr;
+        /* Stack items vertically */
+        gap: 20px;
+        /* Adjust gap */
+      }
+
       header {
-        height: auto;
-        padding: 2rem 1rem;
-        border-radius: 0;
+        padding: 10px 20px;
+        /* Reduce padding for mobile */
       }
 
-      .header-with-images {
-        flex-direction: column;
-        padding: 0;
-        gap: 1.5rem;
+      nav a {
+        font-size: 14px;
+        /* Smaller text for mobile */
+        margin: 0 10px;
+        /* Reduce margin between links */
       }
 
-      .side-image {
-        width: 120px;
+      .hero-text {
+        margin: 0;
+        /* Remove extra margins */
       }
 
-      .heading-text h1 {
-        font-size: 1.8rem;
-      }
-
-      .hero {
-        flex-direction: column;
-        gap: 2rem;
-        padding: 2rem 1rem;
-      }
-
-      .report-section,
-      .gif-section {
-        width: 100%;
-        padding: 1rem;
-      }
-
-      .gif-wrapper,
-      .gif-wrapper1,
-      .gif-wrapper2,
-      .gif-wrapper3 {
-        width: 350px;
-        height: 220px;
-        transform: translateX(-15px);
-      }
-
-      .gif-wrapper img {
-        width: 400px;
-        left: -30px;
-        top: 0;
-      }
-      .gif-wrapper1 img{
-        width: 420px;
-        left: 0;
-        top: 0;
-      }
-      .gif-wrapper2 img{
-        width: 420px;
-        left: 0;
-        top: 0;
-      }
-      .gif-wrapper3 img{
-        width: 420px;
-        left: 100px;
-        top: -50px;
-        right: -100px;
-        bottom: 0px;
-      }
-
-      .gif-wrapper:hover img,
-      .gif-wrapper1:hover img,
-      .gif-wrapper2:hover img,
-      .gif-wrapper3:hover img {
-        transform: scale(1.5);
-      }
-
-      .image-gallery {
-        gap: 10px;
-      }
-
-      .image-container {
-        width: 45vw;
-        height: 45vw;
+      .hero-image {
+        margin: 0;
+        /* Adjust margins for mobile */
       }
     }
-
   </style>
 </head>
+
 <body>
 
-<div class="page-border">
   <header>
-    <div class="header-with-images">
-      <div style="display: flex; flex-direction: column; align-items: center;">
-        <img src="right-head1.png" alt="Leaf Image" class="side-image" />
-        <a href="https://www.linkedin.com/in/anuj-kumar-1365b535a/" target="_blank"
-           style="margin-top: 10px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; background-color: #e8f5e9; border: 2px solid #81c784; border-radius: 12px; box-shadow: 0 0 10px rgba(129, 199, 132, 0.3); transition: background-color 0.3s ease;"
-           onmouseover="this.style.backgroundColor='#c8e6c9';"
-           onmouseout="this.style.backgroundColor='#e8f5e9';">
-          <img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" alt="LinkedIn" width="20" height="20" />
-          <span style="font-size: 0.9rem; color: #2e4a4f;">Anuj Kumar</span>
-        </a>
-      </div>
-      <div class="heading-text">
-        <h1>Arduino-Based-Smart-Watering-System 🌱</h1>
-        <sub style="font-size: 1.2rem; color: #e0f2f1;">Built with ❤️ by Anuj & Team</sub>
-        <p style="margin-top: 1rem; font-size: 1.3rem;">Making plant care effortless with Arduino magic!</p>
-
-      </div>
-    </div>
+    <h1>Anuj Kumar</h1>
+    <nav>
+      <a href="#about">About</a>
+      <a href="#skills">Skills</a>
+      <a href="#projects">Projects</a>
+      <a href="#contact">Contact</a>
+      <a href="#education">Education</a>
+    </nav>
   </header>
 
   <section class="hero">
-    <div class="report-section">
-      <div class="report-theme">
-        <h2>📘 Project Report: Automated Watering System</h2>
-        <p><strong>By:</strong> Anuj Kumar<br>
-           <strong>School:</strong> RPVV SEC 19<br>
-           <strong>Curriculum:</strong> Entrepreneur Mindset Curriculum (EMC)</p>
-
-        <p><strong>Introduction:</strong><br>
-          This project aims to solve a real-world problem — ensuring plants are watered even when we are not home.
-          I developed it as part of the EMC program, inspired by online automation videos and my interest in Arduino and electronics.
-        </p>
-
-        <p><strong>Objective:</strong><br>
-          To build a fully automatic watering system that:
-          <br>• Monitors soil moisture
-          <br>• Controls water flow using a servo motor
-          <br>• Indicates status via LEDs
-        </p>
-
-        <p><strong>Materials Used:</strong><br>
-          Arduino Uno, Soil Moisture Sensor, Servo Motor, Red & Green LEDs, Wiring, Water Valve & Pipe
-        </p>
-
-        <p><strong>Working Principle:</strong><br>
-          Moist soil conducts electricity — the sensor detects it, and Arduino rotates the servo 90° to shut the water supply (Green LED ON).
-          Dry soil doesn't conduct — sensor triggers Arduino to open the valve (Red LED ON). It’s fully automatic.
-        </p>
-
-        <p><strong>Inspiration & Learning:</strong><br>
-          The idea came from YouTube videos on automation. I explored Arduino deeply and learned how to code, use sensors,
-          and integrate electronics practically. EMC helped me bring this idea to life.
-        </p>
-
-        <p><strong>Conclusion:</strong><br>
-          A simple yet powerful solution for plant care using physics and technology. This project boosted my skills in innovation, coding, and electronics.
-        </p>
+    <div class="hero-content">
+      <div class="hero-text">
+        <h2>Hello, <span class="highlight0">Anuj Kumar</span></h2>
+        <p>A Tech Enthusiast & Always ready to learn</p>
       </div>
-    </div>
-
-    <div class="gif-section">
-      <div class="gif-container">
-        <div class="gif-wrapper">
-          <img src="single_plant.gif" alt="Single Plant GIF" />
-        </div>
-        <div class="gif-label">Single Plant</div>
+      <div class="hero-image">
+        <img src="anuj.png" alt="Anuj Kumar" />
       </div>
-
-      <div class="gif-container">
-        <div class="gif-wrapper1">
-          <img src="multi_plant.gif" alt="Multiple Plants GIF" />
-        </div>
-        <div class="gif-label">Multiple Plants</div>
-      </div>
-
-
-      <div class="gif-container">
-        <div class="gif-wrapper2">
-          <img src="real-life demonstration.gif" alt="Real-Life demonstration GIF" />
-        </div>
-        <div class="gif-label">Real-Life demonstration</div>
-      </div>
-
-
-      <div class="gif-container">
-        <div class="gif-wrapper3">
-          <img src="codes.gif" alt="codes GIF" />
-        </div>
-        <div class="gif-label">CODES-Single,multiple plants</div>
-        <a href="plant_code.zip" download class="cta-button" style="margin-top: 10px;">⬇️ Download Codes</a>
-      </div>
-      
     </div>
   </section>
 
-  <div class="image-gallery">
-    <div class="image-container"><img src="image1_1.jpg" alt="Image 1" /></div>
-    <div class="image-container"><img src="image2_1.jpg" alt="Image 2" /></div>
-    <div class="image-container"><img src="image3_1.jpg" alt="Image 3" /></div>
-    <div class="image-container"><img src="image4.jpg" alt="Image 4" /></div>
-    <div class="image-container"><img src="image5.jpg" alt="Image 5" /></div>
-  </div>
+  <section id="about">
+    <h2 class="section-title">About Me</h2>
+    <div style="max-width: 800px; margin: auto; background: var(--card-bg); padding: 30px; border-radius: 15px; box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);">
+      <p style="text-align: center; font-size: 17px; line-height: 1.8; color: #ddd;">
+        Hi! I'm <strong><span class="highlight">Anuj Kumar</span></strong>, a passionate <span class="highlight">Tech Enthusiast</span> and an aspiring <span class="highlight">Software Developer</span>. I have a strong interest in building <span class="highlight">Innovative Solutions</span>, solving <span class="highlight">Complex Problems</span>, and creating <span class="highlight">Engaging User Experiences</span>. Over the years, I've honed my skills in <span class="highlight">Web Development</span>, <span class="highlight">Arduino Projects</span>, and <span class="highlight">Software Engineering</span>, always pushing myself to <span class="highlight">Learn and Grow</span>.
+        <br><br>
+        Currently, I'm working on projects that blend <span class="highlight">Hardware and Software</span>, like my <strong><span class="highlight">Arduino-Based Smart Watering System</span></strong>. I love creating <span class="highlight">Interactive Websites</span>, <span class="highlight">Dynamic Applications</span>, and experimenting with <span class="highlight">IoT Solutions</span>. My approach to problem-solving is driven by <span class="highlight">Curiosity</span>, <span class="highlight">Creativity</span>, and the desire to make <span class="highlight">Technology Accessible and Impactful</span> for people.
+        <br><br>
+        I am always on the lookout for <span class="highlight">New Challenges</span> and <span class="highlight">Opportunities</span> that allow me to <span class="highlight">Expand My Skillset</span> and <span class="highlight">Contribute Meaningfully</span> to the tech community. When I'm not coding, you'll likely find me <span class="highlight">Exploring New Technologies</span>, <span class="highlight">Reading About the Latest Trends</span>, or <span class="highlight">Experimenting with Fun Projects</span> that combine my love for both <span class="highlight">Software and Hardware</span>.
+        <br><br>
+        Feel free to <span class="highlight">Explore My Projects</span> and <span class="highlight">Let's Connect!</span>
+      </p>
+      
+    </div>
+  </section>
+  
+  
+  
+  <section id="education">
+    <h2 class="section-title">Education</h2>
+    <div style="
+      max-width: 800px;
+      margin: auto;
+      background: var(--card-bg);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+      border: 1px solid #333;
+    ">
+      <table style="
+        width: 100%;
+        text-align: left;
+        border-collapse: collapse;
+        color: var(--text);
+      ">
+        <thead>
+          <tr style="border-bottom: 2px solid #555;">
+            <th style="padding: 5px;">Qualification</th>
+            <th style="padding: 5px;">Institute</th>
+            <th style="padding: 5px;">Board</th>
+            <th style="padding: 5px;">Year</th>
+            <th style="padding: 5px;">Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom: 1px solid #444;">
+            <td style="padding: 5px;">12th (Senior Secondary)</td>
+            <td style="padding: 5px;">RPVV SEC 19</td>
+            <td style="padding: 5px;">CBSE</td>
+            <td style="padding: 5px;">2025</td>
+            <td style="padding: 5px;">xyz%</td>
+          </tr>
+          <tr>
+            <td style="padding: 5px;">10th (Secondary)</td>
+            <td style="padding: 5px;">RPVV SEC 19</td>
+            <td style="padding: 5px;">CBSE</td>
+            <td style="padding: 5px;">2023</td>
+            <td style="padding: 5px;">86%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
 
-  <footer>
-    &copy; 2025 EcoPal | Designed with 💚 for plant lovers    
-  </footer>
-</div>
 
-<!-- Lightbox -->
-<div id="lightbox">
-  <span id="close-lightbox">&times;</span>
-  <img id="lightbox-img" src="" alt="Full Size Image" />
-</div>
+  <section id="skills">
+    <h2 class="section-title">Skills</h2>
+    <div class="skills">
+      <div class="card">
+        <h3>HTML & CSS</h3>
+        <p>Created visually appealing and user-friendly web pages with a strong focus on design and functionality. Continuously expanding my knowledge and skills in HTML and CSS to build better experiences.  
+        </p>
+      </div>
 
-<script>
-  const lightbox = document.getElementById("lightbox");
-  const lightboxImg = document.getElementById("lightbox-img");
-  const closeBtn = document.getElementById("close-lightbox");
+      <div class="card">
+        <h3>Git & GitHub</h3>
+        <p>Familiar with Git and GitHub for version control and project collaboration.
+          Comfortable with basic commands like clone, commit, push, and managing repositories.
+        </p>
+        <a href="github ka link" style="color: #00ffd0; text-decoration: none;">
+          🔗Check Out My Github
+        </a>
+      </div>
+      <div class="card">
+        <h3>Python</h3>
+        <p>
+        Comfortable with Python basics and Object-Oriented Programming (OOP).  
+        Built small projects like Stone-Paper-Scissors, KBC Quiz Game, and Library Management System.</p>
+      </div>
+      <div class="card">
+        <h3>Linux</h3>
+        <p>
+          With 7 years of experience using Linux Ubuntu, I’ve gained in-depth knowledge of Linux systems, including dual boot setups and running games. Comfortable working with any Linux distribution, I continue to expand my expertise in the Linux environment.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Project Management</h3>
+        <p>
+          Led and managed an Arduino-based watering system project and a science exhibition, handling most aspects independently. Gained valuable experience in project management and execution.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Problem solving</h3>
+        <p>
+          Experienced in tackling complex challenges through logical thinking and creative solutions. Continuously developing problem-solving skills by working on diverse projects and overcoming obstacles.
+        </p>
+      </div>
+      <div class="card">
+        <h3>C++</h3>
+        <p>
+          Utilized online software to convert block code into Arduino code, allowing me to work with C++ without extensive knowledge of the language. Gained basic understanding of C++ concepts to support my Arduino projects.
+        </p>
+      </div>
+      <div class="card">
+        <h3>IoT</h3>
+        <p>
+          Worked with IoT technologies to create smart systems, integrating sensors and actuators for automated tasks. Gained hands-on experience in connecting devices and enabling communication between hardware and software.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Arduino</h3>
+        <p>
+          Proficient in using Arduino to design and develop interactive projects, integrating sensors, actuators, and other components. Gained practical experience in coding, circuit design, and system integration for various applications.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Arduino</h3>
+        <p>
+          Experienced in using Arduino IDE for coding and uploading programs to Arduino boards. Proficient in troubleshooting, testing, and optimizing code to ensure smooth operation of projects.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Circuit Designing</h3>
+        <p>
+          Skilled in designing circuits for various electronic projects, ensuring functionality and efficiency. Experienced in creating both simple and complex circuit layouts using components like sensors and microcontrollers.
+        </p>
+      </div>
+      
 
-  document.querySelectorAll(".image-gallery img").forEach(img => {
-    img.addEventListener("click", () => {
-      lightbox.style.display = "flex";
-      lightboxImg.src = img.src;
-      lightboxImg.alt = img.alt;
+      
+
+    </div>
+  </section>
+
+  <section id="projects">
+    <h2 class="section-title">Projects</h2>
+    <div class="projects">
+      <div class="card">
+        <h3>
+          Arduino-based project
+        </h3>
+        <p>🚀 Arduino-Based Project<br><br>
+          Developed a smart plant watering system using sensors and Arduino, automating irrigation based on real-time soil moisture data.<br><br>
+          🌐 Responsive Personal Website<br><br>
+          Designed and built a responsive portfolio site to showcase my projects and skills, with interactive elements, animations,
+        </p>
+        <a href="../Arduino-Based-Smart-Watering-System-/arduino.html" style="color: #00ffd0; text-decoration: none;">
+          View Details
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <h2 class="section-title">Contact Me</h2>
+    <form id="contact-form">
+      <input type="text" name="user_name" placeholder="Your Name" required />
+      <input type="email" name="user_email" placeholder="Your Email" required />
+      <textarea name="message" rows="5" placeholder="Your Message..." required></textarea>
+      <button type="submit">Send Message</button>
+    </form>
+  </section>
+
+  
+  <script type="text/javascript">
+    (function () {
+      emailjs.init("xlFs-dv2_g9a_6nuk"); // Your Public Key
+    })();
+    
+    document.getElementById("contact-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      
+      emailjs.sendForm("service_cx6hdbp", "template_eak1ulp", this)
+      .then(function () {
+        alert("Message sent successfully!");
+      }, function (error) {
+        console.error("FAILED...", error);
+        alert("Failed to send message. Please try again later.");
+      });
+      
+      this.reset();
     });
-  });
-
-  closeBtn.addEventListener("click", () => {
-    lightbox.style.display = "none";
-  });
-
-  lightbox.addEventListener("click", (e) => {
-    if (e.target !== lightboxImg) {
-      lightbox.style.display = "none";
-    }
-  });
-</script>
+    </script>
+  
+  <footer>
+    &copy; 2025 Anuj . All rights reserved.
+  </footer>
 
 </body>
+
 </html>
