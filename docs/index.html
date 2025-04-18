@@ -4,7 +4,7 @@
 <head>
   <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
   <script>
-    (function() {
+    (function () {
       emailjs.init("xlFs-dv2_g9a_6nuk"); // Replace with your actual public key
     })();
   </script>
@@ -34,20 +34,46 @@
       background: linear-gradient(to right, var(--primary), var(--accent));
       color: var(--text);
       line-height: 1.6;
+      padding-top: 70px;
+    }
+    .navbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 999;
+      padding: 20px 60px;
+      background: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
+      backdrop-filter: blur(10px); /* Frosted glass effect */
+      -webkit-backdrop-filter: blur(10px); /* For Safari */
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+      transition: box-shadow 0.3s ease-in-out;
+    }
+
+    .navbar.scrolled {
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
     }
 
     header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
       padding: 20px 60px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: var(--card-bg);
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      background: rgba(28, 28, 28, 0.8); /* Semi-transparent background for header */
+      backdrop-filter: blur(10px); /* Frosted glass effect */
+      -webkit-backdrop-filter: blur(10px); /* For Safari */
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Subtle shadow */
     }
+
 
     header h1 {
       font-size: 28px;
       font-weight: 700;
+      color: var(--text);
     }
 
     nav a {
@@ -60,6 +86,9 @@
 
     nav a:hover {
       color: #00ffd0;
+    }
+    .navbar.scrolled {
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15); /* Subtle shadow when scrolling */
     }
 
     .hero {
@@ -182,12 +211,15 @@
       background: var(--card-bg);
       font-size: 14px;
     }
-    .highlight0{
+
+    .highlight0 {
       color: #a592f1;
     }
-    .highlight{
+
+    .highlight {
       color: #38bdf8;
     }
+
     .education-table-wrapper {
       overflow-x: center;
       -webkit-overflow-scrolling: touch;
@@ -197,7 +229,8 @@
     .education {
       width: 100%;
       border-collapse: collapse;
-      min-width: 600px; /* Makes sure it doesn't squish on small screens */
+      min-width: 600px;
+      /* Makes sure it doesn't squish on small screens */
     }
 
 
@@ -277,7 +310,6 @@
       padding: 8px;
       font-size: 14px;
     }
-
   </style>
 </head>
 
@@ -289,7 +321,7 @@
         Anuj Kumar
       </a>
     </h1>
-    <nav>
+    <nav id="navbar">
       <a href="#about">About</a>
       <a href="#education">Education</a>
       <a href="#skills">Skills</a>
@@ -313,22 +345,40 @@
 
   <section id="about">
     <h2 class="section-title">About Me</h2>
-    <div style="max-width: 800px; margin: auto; background: var(--card-bg); padding: 30px; border-radius: 15px; box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);">
+    <div
+      style="max-width: 800px; margin: auto; background: var(--card-bg); padding: 30px; border-radius: 15px; box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);">
       <p style="text-align: center; font-size: 17px; line-height: 1.8; color: #ddd;">
-        Hi! I'm <strong><span class="highlight">Anuj Kumar</span></strong>, a passionate <span class="highlight">Tech Enthusiast</span> and an aspiring <span class="highlight">Software Developer</span>. I have a strong interest in building <span class="highlight">Innovative Solutions</span>, solving <span class="highlight">Complex Problems</span>, and creating <span class="highlight">Engaging User Experiences</span>. Over the years, I've honed my skills in <span class="highlight">Web Development</span>, <span class="highlight">Arduino Projects</span>, and <span class="highlight">Software Engineering</span>, always pushing myself to <span class="highlight">Learn and Grow</span>.
+        Hi! I'm <strong><span class="highlight">Anuj Kumar</span></strong>, a passionate <span class="highlight">Tech
+          Enthusiast</span> and an aspiring <span class="highlight">Software Developer</span>. I have a strong interest
+        in building <span class="highlight">Innovative Solutions</span>, solving <span class="highlight">Complex
+          Problems</span>, and creating <span class="highlight">Engaging User Experiences</span>. Over the years, I've
+        honed my skills in <span class="highlight">Web Development</span>, <span class="highlight">Arduino
+          Projects</span>, and <span class="highlight">Software Engineering</span>, always pushing myself to <span
+          class="highlight">Learn and Grow</span>.
         <br><br>
-        Currently, I'm working on projects that blend <span class="highlight">Hardware and Software</span>, like my <strong><span class="highlight">Arduino-Based Smart Watering System</span></strong>. I love creating <span class="highlight">Interactive Websites</span>, <span class="highlight">Dynamic Applications</span>, and experimenting with <span class="highlight">IoT Solutions</span>. My approach to problem-solving is driven by <span class="highlight">Curiosity</span>, <span class="highlight">Creativity</span>, and the desire to make <span class="highlight">Technology Accessible and Impactful</span> for people.
+        Currently, I'm working on projects that blend <span class="highlight">Hardware and Software</span>, like my
+        <strong><span class="highlight">Arduino-Based Smart Watering System</span></strong>. I love creating <span
+          class="highlight">Interactive Websites</span>, <span class="highlight">Dynamic Applications</span>, and
+        experimenting with <span class="highlight">IoT Solutions</span>. My approach to problem-solving is driven by
+        <span class="highlight">Curiosity</span>, <span class="highlight">Creativity</span>, and the desire to make
+        <span class="highlight">Technology Accessible and Impactful</span> for people.
         <br><br>
-        I am always on the lookout for <span class="highlight">New Challenges</span> and <span class="highlight">Opportunities</span> that allow me to <span class="highlight">Expand My Skillset</span> and <span class="highlight">Contribute Meaningfully</span> to the tech community. When I'm not coding, you'll likely find me <span class="highlight">Exploring New Technologies</span>, <span class="highlight">Reading About the Latest Trends</span>, or <span class="highlight">Experimenting with Fun Projects</span> that combine my love for both <span class="highlight">Software and Hardware</span>.
+        I am always on the lookout for <span class="highlight">New Challenges</span> and <span
+          class="highlight">Opportunities</span> that allow me to <span class="highlight">Expand My Skillset</span> and
+        <span class="highlight">Contribute Meaningfully</span> to the tech community. When I'm not coding, you'll likely
+        find me <span class="highlight">Exploring New Technologies</span>, <span class="highlight">Reading About the
+          Latest Trends</span>, or <span class="highlight">Experimenting with Fun Projects</span> that combine my love
+        for both <span class="highlight">Software and Hardware</span>.
         <br><br>
-        Feel free to <span class="highlight">Explore My Projects</span> and <span class="highlight">Let's Connect!</span>
+        Feel free to <span class="highlight">Explore My Projects</span> and <span class="highlight">Let's
+          Connect!</span>
       </p>
-      
+
     </div>
   </section>
-  
-  
-  
+
+
+
   <section id="education">
     <h2 class="section-title">🎓 Education</h2>
     <div class="education-table-wrapper">
@@ -381,7 +431,7 @@
       </table>
     </div>
   </section>
-  
+
 
 
   <section id="skills">
@@ -389,7 +439,8 @@
     <div class="skills">
       <div class="card">
         <h3>HTML & CSS</h3>
-        <p>Created visually appealing and user-friendly web pages with a strong focus on design and functionality. Continuously expanding my knowledge and skills in HTML and CSS to build better experiences.  
+        <p>Created visually appealing and user-friendly web pages with a strong focus on design and functionality.
+          Continuously expanding my knowledge and skills in HTML and CSS to build better experiences.
         </p>
       </div>
 
@@ -405,59 +456,72 @@
       <div class="card">
         <h3>Python</h3>
         <p>
-        Comfortable with Python basics and Object-Oriented Programming (OOP).  
-        Built small projects like Stone-Paper-Scissors, KBC Quiz Game, and Library Management System.
-      </p>
-      <a href="https://github.com/Anuj-DataStream/Python_programming.git" style="color: #00ffd0; text-decoration: none;">
-        🔗Check Out My Work
-      </a>
+          Comfortable with Python basics and Object-Oriented Programming (OOP).
+          Built small projects like Stone-Paper-Scissors, KBC Quiz Game, and Library Management System.
+        </p>
+        <a href="https://github.com/Anuj-DataStream/Python_programming.git"
+          style="color: #00ffd0; text-decoration: none;">
+          🔗Check Out My Work
+        </a>
       </div>
       <div class="card">
         <h3>Linux</h3>
         <p>
-          With 7 years of experience using Linux Ubuntu, I’ve gained in-depth knowledge of Linux systems, including dual boot setups and running games. Comfortable working with any Linux distribution, I continue to expand my expertise in the Linux environment.
+          With 7 years of experience using Linux Ubuntu, I’ve gained in-depth knowledge of Linux systems, including dual
+          boot setups and running games. Comfortable working with any Linux distribution, I continue to expand my
+          expertise in the Linux environment.
         </p>
       </div>
       <div class="card">
         <h3>Project Management</h3>
         <p>
-          Led and managed an Arduino-based watering system project and a science exhibition, handling most aspects independently. Gained valuable experience in project management and execution.
+          Led and managed an Arduino-based watering system project and a science exhibition, handling most aspects
+          independently. Gained valuable experience in project management and execution.
         </p>
       </div>
       <div class="card">
         <h3>Problem solving</h3>
         <p>
-          Experienced in tackling complex challenges through logical thinking and creative solutions. Continuously developing problem-solving skills by working on diverse projects and overcoming obstacles.
+          Experienced in tackling complex challenges through logical thinking and creative solutions. Continuously
+          developing problem-solving skills by working on diverse projects and overcoming obstacles.
         </p>
       </div>
       <div class="card">
         <h3>C++</h3>
         <p>
-          Utilized online software to convert block code into Arduino code, allowing me to work with C++ without extensive knowledge of the language. Gained basic understanding of C++ concepts to support my Arduino projects.
+          Utilized online software to convert block code into Arduino code, allowing me to work with C++ without
+          extensive knowledge of the language. Gained basic understanding of C++ concepts to support my Arduino
+          projects.
         </p>
       </div>
       <div class="card">
         <h3>IoT</h3>
         <p>
-          Worked with IoT technologies to create smart systems, integrating sensors and actuators for automated tasks. Gained hands-on experience in connecting devices and enabling communication between hardware and software.
+          Worked with IoT technologies to create smart systems, integrating sensors and actuators for automated tasks.
+          Gained hands-on experience in connecting devices and enabling communication between hardware and software.
         </p>
       </div>
       <div class="card">
         <h3>Arduino</h3>
         <p>
-          Proficient in using Arduino to design and develop interactive projects, integrating sensors, actuators, and other components. Gained practical experience in coding, circuit design, and system integration for various applications.
+          Proficient in using Arduino to design and develop interactive projects, integrating sensors, actuators, and
+          other components. Gained practical experience in coding, circuit design, and system integration for various
+          applications.
         </p>
       </div>
       <div class="card">
         <h3>Arduino IDE</h3>
         <p>
-          Experienced in using Arduino IDE for coding and uploading programs to Arduino boards. Proficient in troubleshooting, testing, and optimizing code to ensure smooth operation of projects.
+          Experienced in using Arduino IDE for coding and uploading programs to Arduino boards. Proficient in
+          troubleshooting, testing, and optimizing code to ensure smooth operation of projects.
         </p>
       </div>
       <div class="card">
         <h3>Circuit Designing</h3>
         <p>
-          Skilled in designing circuits for various electronic projects, ensuring functionality and efficiency. Experienced in creating both simple and complex circuit layouts using components like sensors and microcontrollers.
+          Skilled in designing circuits for various electronic projects, ensuring functionality and efficiency.
+          Experienced in creating both simple and complex circuit layouts using components like sensors and
+          microcontrollers.
         </p>
       </div>
     </div>
@@ -469,9 +533,11 @@
       <div class="card">
         <h3>Arduino-based project</h3>
         <p>🚀 Arduino-Based Project<br><br>
-          Developed a smart plant watering system using sensors and Arduino, automating irrigation based on real-time soil moisture data.<br><br>
+          Developed a smart plant watering system using sensors and Arduino, automating irrigation based on real-time
+          soil moisture data.<br><br>
         </p>
-        <a href="projects/Arudino_based_plant_watering_system_page/arduino_plant.html" style="color: #00ffd0; text-decoration: none;">
+        <a href="projects/Arudino_based_plant_watering_system_page/arduino_plant.html"
+          style="color: #00ffd0; text-decoration: none;">
           View Details
         </a>
       </div>
@@ -523,22 +589,34 @@
     (function () {
       emailjs.init("xlFs-dv2_g9a_6nuk"); // Your Public Key
     })();
-    
+
     document.getElementById("contact-form").addEventListener("submit", function (e) {
       e.preventDefault();
-      
+
       emailjs.sendForm("service_cx6hdbp", "template_eak1ulp", this)
-      .then(function () {
-        alert("Message sent successfully!");
-      }, function (error) {
-        console.error("FAILED...", error);
-        alert("Failed to send message. Please try again later.");
-      });
-      
+        .then(function () {
+          alert("Message sent successfully!");
+        }, function (error) {
+          console.error("FAILED...", error);
+          alert("Failed to send message. Please try again later.");
+        });
+
       this.reset();
     });
-    </script>
+  </script>
+  <script>
+    const navbar = document.getElementById("navbar");
   
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 10) {
+        navbar.classList.add("scrolled");
+      } else {
+        navbar.classList.remove("scrolled");
+      }
+    });
+  </script>
+  
+
   <footer>
     &copy; 2025 Anuj . All rights reserved.
   </footer>
