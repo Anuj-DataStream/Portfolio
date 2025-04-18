@@ -188,13 +188,18 @@
     .highlight{
       color: #38bdf8;
     }
-    .education table {
-      display: block;
-      overflow-x: auto;
-      white-space: nowrap;
-      width: 100%;
+    .education-table-wrapper {
+      overflow-x: center;
       -webkit-overflow-scrolling: touch;
+      border-radius: 10px;
     }
+
+    .education {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 600px; /* Makes sure it doesn't squish on small screens */
+    }
+
 
     .education table th,
     .education table td {
@@ -325,12 +330,17 @@
   
   
   <section id="education">
-    <h2 class="section-title">Education</h2>
+    <h2 class="section-title">🎓 Education</h2>
+    <div class="education-table-wrapper">
+      <table class="education">
+        <!-- your existing table content -->
+      </table>
+    </div>
     <div style="
-      max-width: 800px;
+      max-width: 560px;
       margin: auto;
       background: var(--card-bg);
-      padding: 20px;
+      padding: 17px;
       border-radius: 15px;
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
       border: 1px solid #333;
@@ -340,35 +350,38 @@
         text-align: left;
         border-collapse: collapse;
         color: var(--text);
+        overflow-x: auto; /* Allow horizontal scrolling on small screens */
+        display: block;
       ">
         <thead>
           <tr style="border-bottom: 2px solid #555;">
-            <th style="padding: 1px;">Qualification</th>
-            <th style="padding: 1px;">Institute</th>
-            <th style="padding: 1px;">Board</th>
-            <th style="padding: 1px;">Year</th>
-            <th style="padding: 1px;">Score</th>
+            <th style="padding: 10px;">Qualification</th>
+            <th style="padding: 10px;">Institute</th>
+            <th style="padding: 10px;">Board</th>
+            <th style="padding: 10px;">Year</th>
+            <th style="padding: 10px;">Score</th>
           </tr>
         </thead>
         <tbody>
           <tr style="border-bottom: 1px solid #444;">
-            <td style="padding: 1px;">12th (Senior Secondary)</td>
-            <td style="padding: 1px;">RPVV SEC 19</td>
-            <td style="padding: 1px;">CBSE</td>
-            <td style="padding: 1px;">2025</td>
-            <td style="padding: 1px;">xyz%</td>
+            <td style="padding: 10px;">12th (Senior Secondary)</td>
+            <td style="padding: 10px;">RPVV SEC 19</td>
+            <td style="padding: 10px;">CBSE</td>
+            <td style="padding: 10px;">2025</td>
+            <td style="padding: 10px;">xyz%</td>
           </tr>
           <tr>
-            <td style="padding: 1px;">10th (Secondary)</td>
-            <td style="padding: 1px;">RPVV SEC 19</td>
-            <td style="padding: 1px;">CBSE</td>
-            <td style="padding: 1px;">2023</td>
-            <td style="padding: 1px;">86%</td>
+            <td style="padding: 10px;">10th (Secondary)</td>
+            <td style="padding: 10px;">RPVV SEC 19</td>
+            <td style="padding: 10px;">CBSE</td>
+            <td style="padding: 10px;">2023</td>
+            <td style="padding: 10px;">86%</td>
           </tr>
         </tbody>
       </table>
     </div>
   </section>
+  
 
 
   <section id="skills">
