@@ -3,585 +3,994 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EcoPal | Smart Plant Care</title>
-
+  <title>EcoPal — Smart Plant Watering System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Outfit:wght@300;400;500;600&family=Space+Mono&display=swap" rel="stylesheet" />
   <style>
+    /* ============================================
+       ROOT & RESET
+    ============================================ */
+    :root {
+      --bg:      #060e0a;
+      --bg2:     #0a1510;
+      --card:    #0d1f15;
+      --border:  rgba(74,222,128,0.12);
+      --green:   #4ade80;
+      --lime:    #a3e635;
+      --emerald: #10b981;
+      --amber:   #fbbf24;
+      --text:    #e8f5ee;
+      --muted:   #6b8f77;
+      --radius:  18px;
+    }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
     body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #e3f2fd, #e8f5e9);
-      color: #2e4a4f;
-      text-align: center;
-      transition: background 0.5s ease;
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    /* ============================================
+       SCROLL PROGRESS
+    ============================================ */
+    #scroll-bar {
+      position: fixed; top: 0; left: 0;
+      height: 3px; width: 0%;
+      background: linear-gradient(90deg, var(--emerald), var(--lime));
+      z-index: 9999; transition: width 0.1s linear;
     }
 
-    .page-border {
-      max-width: 98vw;
-      margin: 10px auto;
-      padding: 10px;
-      border: 8px solid #a5d6a7;
-      border-radius: 30px;
-      box-shadow: 0 0 40px rgba(46, 74, 79, 0.2);
-      background-color: #ffffff;
-      transition: box-shadow 0.3s ease;
+    /* ============================================
+       CANVAS BACKGROUND
+    ============================================ */
+    #bg-canvas {
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 0;
     }
 
-    .page-border:hover {
-      box-shadow: 0 0 60px rgba(46, 74, 79, 0.4);
+    /* Noise overlay */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 1; opacity: 0.3;
     }
 
-    header {
-      background-color: #4caf50;
-      height: 60vh;
-      border-radius: 70px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      color: white;
-      text-align: center;
-      border-bottom: 10px solid #3e8e41;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    }
+    .site { position: relative; z-index: 2; }
 
-    header h1 {
-      font-family: 'Roboto', sans-serif;
-      font-size: 2.8rem;
-      margin: 0;
-      color: #ffffff;
-      text-shadow: 1px 1px 2px #4caf50;
-      animation: fadeInDown 1s ease-out;
-    }
-
-    @keyframes fadeInDown {
-      from {
-        opacity: 0;
-        transform: translateY(-20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
-    }
-
-
-
-
-    header sub {
-      font-size: 1.2rem;
-      color: #f1f1f1;
-    }
-
-    header p {
-      margin-top: 1rem;
-      font-size: 1.2rem;
-      color: #f1f1f1;
-    }
-
-    .header-with-images {
-      display: flex;
-      align-items: center;
+    /* ============================================
+       NAV
+    ============================================ */
+    nav {
+      position: fixed; top: 0; left: 0; width: 100%;
+      height: 66px;
+      display: flex; align-items: center;
       justify-content: space-between;
-      gap: 2rem;
-      width: 100%;
-      padding: 0 2rem;
-      box-sizing: border-box;
-      flex-wrap: wrap;
+      padding: 0 52px;
+      background: rgba(6,14,10,0.75);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+      z-index: 1000;
     }
-
-    .side-image {
-      width: 200px;
-      height: auto;
-      border: 3px solid #a5d6a7;
-      border-radius: 300px;
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
-      background-color: #dcedc8;
-      transition: transform 0.3s ease;
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-family: 'Playfair Display', serif;
+      font-size: 20px; font-weight: 700;
     }
-
-    .side-image:hover {
-      transform: scale(1.05);
+    .nav-logo .leaf { font-size: 22px; }
+    .nav-logo span { color: var(--green); }
+    .nav-links { display: flex; align-items: center; gap: 4px; }
+    .nav-links a {
+      font-size: 13px; font-weight: 500;
+      color: var(--muted);
+      padding: 7px 14px; border-radius: 8px;
+      transition: color 0.2s, background 0.2s;
     }
-
-    .heading-text {
-      text-align: center;
-      flex: 1;
-      min-width: 250px;
+    .nav-links a:hover { color: var(--green); background: rgba(74,222,128,0.07); }
+    .nav-back {
+      display: inline-flex; align-items: center; gap: 6px;
+      border: 1.5px solid var(--border);
+      border-radius: 9px;
+      padding: 7px 16px;
+      font-size: 13px; color: var(--muted);
+      transition: border-color 0.2s, color 0.2s;
     }
+    .nav-back:hover { border-color: rgba(74,222,128,0.3); color: var(--green); }
 
+    /* Hamburger */
+    .hamburger {
+      display: none; flex-direction: column;
+      gap: 5px; cursor: pointer; padding: 6px;
+    }
+    .hamburger span {
+      width: 24px; height: 2px;
+      background: var(--text); border-radius: 2px;
+      transition: transform 0.3s, opacity 0.3s;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .mobile-nav {
+      display: none; position: fixed;
+      top: 66px; left: 0; width: 100%;
+      background: rgba(6,14,10,0.97);
+      backdrop-filter: blur(20px);
+      padding: 20px 24px 28px;
+      flex-direction: column; gap: 4px;
+      z-index: 999; border-bottom: 1px solid var(--border);
+    }
+    .mobile-nav.open { display: flex; }
+    .mobile-nav a {
+      font-size: 15px; color: var(--muted);
+      padding: 12px 16px; border-radius: 10px;
+      transition: color 0.2s, background 0.2s;
+    }
+    .mobile-nav a:hover { color: var(--green); background: rgba(74,222,128,0.07); }
+
+    /* ============================================
+       HERO
+    ============================================ */
     .hero {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 2rem;
-      flex-wrap: wrap;
-      padding: 3rem 1rem;
-    }
-
-    .report-section {
-      width: 50%;
-      padding: 2rem;
-      box-sizing: border-box;
-    }
-
-    .gif-section {
-      width: 45%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2rem;
-    }
-
-    .gif-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .gif-wrapper, .gif-wrapper1, .gif-wrapper2 ,.gif-wrapper3{
-      overflow: hidden;
-      border-radius: 20px;
-      border: 5px solid #81c784;
-      box-shadow: 0 0 25px #81c784, 0 0 50px #2e4a4f;
-      background-color: #ffffff;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .gif-wrapper:hover, .gif-wrapper1:hover ,.gif-wrapper2:hover,.gif-wrapper3:hover{
-      transform: scale(1.05);
-      box-shadow: 0 0 35px #81c784, 0 0 60px #2e4a4f;
-    }
-
-    .gif-wrapper {
-      width: 220px;
-      height: 220px;
-    }
-
-    .gif-wrapper1 {
-      width: 350px;
-      height: 220px;
-    }
-
-    .gif-wrapper2 {
-      width: 350px;
-      height: 220px;
-    }
-
-    .gif-wrapper3 {
-      width: 350px;
-      height: 220px;
-    }
-
-
-    .gif-wrapper img, .gif-wrapper1 img ,.gif-wrapper2 img,.gif-wrapper3 img {
-      display: block;
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 100px 40px 80px;
       position: relative;
-      transform: scale(1.5);
+    }
+    /* Radial glow behind hero */
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -55%);
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(16,185,129,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(74,222,128,0.08);
+      border: 1px solid rgba(74,222,128,0.2);
+      color: var(--green);
+      font-family: 'Space Mono', monospace;
+      font-size: 11px; letter-spacing: 1px;
+      padding: 7px 16px; border-radius: 100px;
+      margin-bottom: 30px;
+      animation: fadeUp 0.7s ease both;
+    }
+    .hero-badge .dot {
+      width: 6px; height: 6px;
+      background: var(--green); border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 50% { opacity: 0.4; transform: scale(1.5); } }
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(38px, 6vw, 80px);
+      font-weight: 900;
+      line-height: 1.08;
+      letter-spacing: -1.5px;
+      margin-bottom: 22px;
+      animation: fadeUp 0.8s 0.1s ease both;
+    }
+    .hero-title .accent {
+      background: linear-gradient(135deg, var(--green) 20%, var(--lime));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: 17px; color: var(--muted);
+      max-width: 560px; margin: 0 auto 14px;
+      animation: fadeUp 0.8s 0.2s ease both;
+    }
+    .hero-byline {
+      font-family: 'Space Mono', monospace;
+      font-size: 12px; color: var(--emerald);
+      margin-bottom: 44px; letter-spacing: 0.5px;
+      animation: fadeUp 0.8s 0.3s ease both;
+    }
+    .hero-stats {
+      display: flex; gap: 0; flex-wrap: wrap;
+      justify-content: center;
+      border: 1px solid var(--border);
+      border-radius: 16px; overflow: hidden;
+      max-width: 680px; margin: 0 auto 50px;
+      animation: fadeUp 0.8s 0.4s ease both;
+    }
+    .stat-item {
+      flex: 1; min-width: 130px;
+      padding: 22px 20px; text-align: center;
+      border-right: 1px solid var(--border);
+      background: rgba(13,31,21,0.6);
+      transition: background 0.25s;
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-item:hover { background: rgba(74,222,128,0.06); }
+    .stat-val {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px; font-weight: 700;
+      color: var(--green);
+    }
+    .stat-label {
+      font-size: 11px; color: var(--muted);
+      letter-spacing: 0.4px; margin-top: 4px;
+    }
+    .hero-scroll {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 8px;
+      color: var(--muted); font-size: 12px;
+      letter-spacing: 1px;
+      animation: fadeUp 0.8s 0.55s ease both;
+    }
+    .scroll-line {
+      width: 1px; height: 48px;
+      background: linear-gradient(to bottom, var(--green), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%,100% { opacity: 0.4; } 50% { opacity: 1; }
+    }
+    @keyframes fadeUp {
+      from { opacity:0; transform: translateY(30px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+
+    /* ============================================
+       SECTIONS
+    ============================================ */
+    section { padding: 100px 52px; }
+    .sec-header { text-align: center; margin-bottom: 64px; }
+    .sec-eyebrow {
+      display: block;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px; letter-spacing: 3px;
+      text-transform: uppercase; color: var(--green);
+      margin-bottom: 14px;
+    }
+    .sec-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 800; letter-spacing: -0.5px;
+      line-height: 1.1;
+    }
+    .sec-divider {
+      width: 44px; height: 3px;
+      background: linear-gradient(90deg, var(--green), var(--lime));
+      border-radius: 2px; margin: 16px auto 0;
+    }
+
+    /* Reveal */
+    .reveal {
+      opacity: 0; transform: translateY(36px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ============================================
+       ABOUT / OVERVIEW
+    ============================================ */
+    #overview .overview-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px; max-width: 1100px; margin: 0 auto;
+    }
+    .ov-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px 30px;
+      transition: border-color 0.3s, transform 0.3s;
+      position: relative; overflow: hidden;
+    }
+    .ov-card::before {
+      content: '';
+      position: absolute; top: -60px; right: -60px;
+      width: 180px; height: 180px;
+      background: radial-gradient(circle, rgba(74,222,128,0.08), transparent 70%);
+      border-radius: 50%;
+    }
+    .ov-card:hover { border-color: rgba(74,222,128,0.25); transform: translateY(-5px); }
+    .ov-icon { font-size: 30px; margin-bottom: 14px; }
+    .ov-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px; font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .ov-text { font-size: 14.5px; color: var(--muted); line-height: 1.8; }
+    .ov-text strong { color: var(--text); font-weight: 500; }
+    .hi { color: var(--green); }
+
+    /* ============================================
+       WORKING PRINCIPLE (Flow)
+    ============================================ */
+    #working .flow {
+      display: flex; align-items: center;
+      justify-content: center;
+      flex-wrap: wrap; gap: 0;
+      max-width: 1050px; margin: 0 auto;
+    }
+    .flow-step {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 24px;
+      text-align: center;
+      min-width: 160px; max-width: 180px;
+      flex: 1;
+      transition: border-color 0.3s, transform 0.3s;
+      position: relative;
+    }
+    .flow-step:hover { border-color: rgba(74,222,128,0.3); transform: translateY(-6px); }
+    .flow-icon { font-size: 32px; margin-bottom: 12px; }
+    .flow-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .flow-desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
+    .flow-arrow {
+      font-size: 22px; color: var(--emerald);
+      padding: 0 6px; flex-shrink: 0;
+      align-self: center;
+    }
+
+    /* State indicator blocks */
+    .states-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 20px; max-width: 700px;
+      margin: 48px auto 0;
+    }
+    .state-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px 22px;
+      display: flex; align-items: flex-start; gap: 14px;
+      transition: border-color 0.3s;
+    }
+    .state-card.wet  { border-left: 3px solid var(--green); }
+    .state-card.dry  { border-left: 3px solid #f87171; }
+    .state-card:hover { border-color: rgba(74,222,128,0.3); }
+    .state-led {
+      width: 14px; height: 14px; border-radius: 50%;
+      margin-top: 4px; flex-shrink: 0;
+    }
+    .led-green { background: var(--green); box-shadow: 0 0 8px var(--green); }
+    .led-red   { background: #f87171;    box-shadow: 0 0 8px #f87171; }
+    .state-info-title { font-size: 14px; font-weight: 600; margin-bottom: 5px; }
+    .state-info-text  { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* ============================================
+       MATERIALS
+    ============================================ */
+    #materials .mat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px; max-width: 1000px; margin: 0 auto;
+    }
+    .mat-chip {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
+      display: flex; align-items: center; gap: 12px;
+      transition: border-color 0.25s, transform 0.25s;
+    }
+    .mat-chip:hover { border-color: rgba(74,222,128,0.28); transform: translateY(-3px); }
+    .mat-chip-icon { font-size: 22px; }
+    .mat-chip-name { font-size: 14px; font-weight: 500; }
+
+    /* ============================================
+       DEMOS (GIFs)
+    ============================================ */
+    #demos .demos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px; max-width: 1100px; margin: 0 auto;
+    }
+    .demo-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    }
+    .demo-card:hover {
+      border-color: rgba(74,222,128,0.3);
+      transform: translateY(-7px);
+      box-shadow: 0 22px 55px rgba(0,0,0,0.5);
+    }
+    .demo-media {
+      width: 160%; height: 220px;
+      overflow: hidden; position: relative;
+      background: #0a1a10;
+      left  : -40px
+    }
+    
+    .demo-media1{
+      width: 100%; height: 220px;
+      overflow: hidden; position: relative;
+      background: #0a1a10;
+    }
+    .demo-media2{
+      width: 180%; height: 220px;
+      overflow: hidden; position: relative;
+      background: #0a1a10;
+    }
+    .demo-media img {
+      width: 100%; height: 100%;
+      object-fit: cover;
       transition: transform 0.5s ease;
     }
-
-    .gif-wrapper img {
-      width: 400px;
-      left: -30px;
-      top: 0;
+    .demo-card:hover .demo-media img { transform: scale(1.06); }
+    .demo-info { padding: 20px 22px; }
+    .demo-num {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px; color: var(--emerald);
+      letter-spacing: 2px; margin-bottom: 6px;
     }
-
-    .gif-wrapper1 img {
-      width: 420px;
-      left: 0;
-      top: 0;
+    .demo-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px; font-weight: 700;
+      margin-bottom: 6px;
     }
-
-
-    .gif-wrapper2 img {
-      width: 420px;
-      left: 0;
-      top: 0;
+    .demo-desc { font-size: 13px; color: var(--muted); line-height: 1.7; }
+    .demo-download {
+      display: inline-flex; align-items: center; gap: 7px;
+      margin-top: 14px;
+      background: rgba(74,222,128,0.1);
+      border: 1px solid rgba(74,222,128,0.2);
+      color: var(--green);
+      font-size: 12px; font-family: 'Space Mono', monospace;
+      padding: 8px 16px; border-radius: 8px;
+      transition: background 0.2s, transform 0.2s;
     }
+    .demo-download:hover { background: rgba(74,222,128,0.18); transform: translateY(-2px); }
 
-    .gif-wrapper3 img {
-      width: 420px;
-      left: 100px;
-      top: -50px;
-      right: -100px;
-      bottom: 0px;
+    /* ============================================
+       GALLERY
+    ============================================ */
+    #gallery .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px; max-width: 1100px; margin: 0 auto;
     }
-
-    .gif-wrapper:hover img,
-    .gif-wrapper1:hover img
-    .gif-wrapper2:hover img
-    .gif-wrapper3:hover img {
-      transform: scale(1.7);
-    }
-
-    .gif-label {
-      margin-top: 10px;
-      font-size: 1.3rem;
-      color: #2e4a4f;
-      font-weight: 500;
-    }
-
-    .report-theme {
-      background-color: #e8f5e9;
-      padding: 2rem;
-      border-radius: 30px;
-      box-shadow: 0 0 20px rgba(46, 74, 79, 0.1);
-      max-width: 900px;
-      text-align: left;
-      display: flex;
-      flex-direction: column;
-      justify-content: left;
-      transition: background-color 0.3s ease;
-    }
-
-    .report-theme:hover {
-      background-color: #c8e6c9;
-    }
-
-    .report-theme h2 {
-      margin-bottom: 1rem;
-      font-size: 1.5rem;
-      color: #2e4a4f;
-    }
-
-    .report-theme p {
-      font-size: 1rem;
-      color: #455a64;
-      margin-bottom: 1.5rem;
-    }
-
-    .cta-button {
-      padding: 1rem 2rem;
-      font-size: 1.2rem;
-      color: white;
-      background-color: #3e8e41;
-      border: none;
-      border-radius: 30px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    .cta-button:hover {
-      background-color: #2e7d32;
-    }
-
-    footer {
-      margin-top: 3rem;
-      padding: 1rem;
-      background-color: #c8e6c9;
-      color: #2e4a4f;
-      font-weight: bold;
-    }
-
-    footer a {
-      color: #2e4a4f;
-      text-decoration: none;
-      transition: color 0.3s ease;
-    }
-
-    footer a:hover {
-      color: #388e3c;
-    }
-
-    /* Styles for the image gallery */
-    .image-gallery {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      flex-wrap: wrap;
-      margin-top: 30px;
-    }
-
-    .image-gallery .image-container {
-      width: 180px;
-      height: 180px;
+    .gallery-item {
+      border-radius: 14px;
       overflow: hidden;
-      border-radius: 15px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-      transition: transform 0.3s ease;
-    }
-
-    .image-gallery .image-container:hover {
-      transform: scale(1.1);
-    }
-
-    .image-gallery img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.3s ease;
+      border: 1px solid var(--border);
+      aspect-ratio: 1;
       cursor: pointer;
+      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
     }
-
-    .image-gallery img:hover {
-      transform: scale(1.05);
+    .gallery-item:hover {
+      transform: scale(1.04);
+      border-color: rgba(74,222,128,0.3);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.5);
     }
+    .gallery-item img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.5s;
+    }
+    .gallery-item:hover img { transform: scale(1.08); }
 
-    /* Lightbox styles */
+    /* Lightbox */
     #lightbox {
-      position: fixed;
-      z-index: 9999;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.9);
-      display: none;
-      justify-content: center;
-      align-items: center;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.92);
+      display: none; align-items: center;
+      justify-content: center; z-index: 9999;
+      backdrop-filter: blur(8px);
     }
-
-    #lightbox img {
-      max-width: 90%;
-      max-height: 90%;
-      border-radius: 15px;
-      box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+    #lightbox.active { display: flex; }
+    #lb-img {
+      max-width: 88vw; max-height: 86vh;
+      border-radius: 16px;
+      box-shadow: 0 0 60px rgba(74,222,128,0.15);
+      animation: lbIn 0.25s ease;
     }
-
-    #close-lightbox {
-      position: absolute;
-      top: 20px;
-      right: 30px;
-      font-size: 40px;
-      color: white;
-      cursor: pointer;
-      font-weight: bold;
-      transition: color 0.3s ease;
+    @keyframes lbIn { from { opacity:0; transform: scale(0.93); } to { opacity:1; transform: scale(1); } }
+    #lb-close {
+      position: absolute; top: 24px; right: 28px;
+      font-size: 36px; color: var(--muted);
+      cursor: pointer; line-height: 1;
+      transition: color 0.2s, transform 0.2s;
     }
+    #lb-close:hover { color: #f87171; transform: rotate(90deg); }
 
-    #close-lightbox:hover {
-      color: #f44336;
+    /* ============================================
+       PROJECT REPORT
+    ============================================ */
+    #report .report-inner {
+      max-width: 860px; margin: 0 auto;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 52px 56px;
+      position: relative; overflow: hidden;
     }
-
-    @media (max-width: 768px) {
-      header {
-        height: auto;
-        padding: 2rem 1rem;
-        border-radius: 0;
-      }
-
-      .header-with-images {
-        flex-direction: column;
-        padding: 0;
-        gap: 1.5rem;
-      }
-
-      .side-image {
-        width: 120px;
-      }
-
-      .heading-text h1 {
-        font-size: 1.8rem;
-      }
-
-      .hero {
-        flex-direction: column;
-        gap: 2rem;
-        padding: 2rem 1rem;
-      }
-
-      .report-section,
-      .gif-section {
-        width: 100%;
-        padding: 1rem;
-      }
-
-      .gif-wrapper,
-      .gif-wrapper1,
-      .gif-wrapper2,
-      .gif-wrapper3 {
-        width: 350px;
-        height: 220px;
-        transform: translateX(-15px);
-      }
-
-      .gif-wrapper img {
-        width: 400px;
-        left: -30px;
-        top: 0;
-      }
-      .gif-wrapper1 img{
-        width: 420px;
-        left: 0;
-        top: 0;
-      }
-      .gif-wrapper2 img{
-        width: 420px;
-        left: 0;
-        top: 0;
-      }
-      .gif-wrapper3 img{
-        width: 420px;
-        left: 100px;
-        top: -50px;
-        right: -100px;
-        bottom: 0px;
-      }
-
-      .gif-wrapper:hover img,
-      .gif-wrapper1:hover img,
-      .gif-wrapper2:hover img,
-      .gif-wrapper3:hover img {
-        transform: scale(1.5);
-      }
-
-      .image-gallery {
-        gap: 10px;
-      }
-
-      .image-container {
-        width: 45vw;
-        height: 45vw;
-      }
+    #report .report-inner::before {
+      content: '';
+      position: absolute; top: -100px; right: -100px;
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(74,222,128,0.07), transparent 70%);
+      border-radius: 50%;
     }
+    .report-meta {
+      display: flex; flex-wrap: wrap; gap: 12px;
+      margin-bottom: 36px;
+    }
+    .report-tag {
+      background: rgba(74,222,128,0.08);
+      border: 1px solid rgba(74,222,128,0.15);
+      color: var(--green);
+      font-size: 12px; font-family: 'Space Mono', monospace;
+      padding: 6px 14px; border-radius: 8px;
+      letter-spacing: 0.3px;
+    }
+    .report-block { margin-bottom: 30px; }
+    .report-block-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 17px; font-weight: 700;
+      color: var(--green); margin-bottom: 10px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .report-block-text {
+      font-size: 14.5px; color: #8baa98;
+      line-height: 1.85; position: relative; z-index: 1;
+    }
+    .report-block-text li { margin-top: 5px; margin-left: 18px; }
 
+    /* ============================================
+       FOOTER
+    ============================================ */
+    footer {
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      padding: 36px 52px;
+      display: flex; align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .footer-brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px; font-weight: 800;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .footer-brand span { color: var(--green); }
+    .footer-copy { font-size: 13px; color: var(--muted); }
+    .footer-link {
+      font-size: 13px; color: var(--muted);
+      display: inline-flex; align-items: center; gap: 6px;
+      transition: color 0.2s;
+    }
+    .footer-link:hover { color: var(--green); }
+
+    /* ============================================
+       RESPONSIVE
+    ============================================ */
+    @media (max-width: 900px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      section { padding: 80px 20px; }
+      .hero { padding: 100px 20px 70px; }
+      #overview .overview-grid { grid-template-columns: 1fr; }
+      .flow { flex-direction: column; align-items: center; }
+      .flow-arrow { transform: rotate(90deg); }
+      .states-grid { grid-template-columns: 1fr; }
+      #report .report-inner { padding: 32px 22px; }
+      footer { padding: 26px 20px; flex-direction: column; text-align: center; }
+    }
+    @media (max-width: 600px) {
+      .hero-stats { flex-direction: column; border: none; gap: 12px; }
+      .stat-item { border: 1px solid var(--border); border-radius: 12px; }
+      .demos-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
 
-<div class="page-border">
-  <header>
-    <div class="header-with-images">
-      <div style="display: flex; flex-direction: column; align-items: center;">
-        <img src="right-head1.png" alt="Leaf Image" class="side-image" />
-        <a href="https://www.linkedin.com/in/anuj-kumar-1365b535a/" target="_blank"
-           style="margin-top: 10px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; background-color: #e8f5e9; border: 2px solid #81c784; border-radius: 12px; box-shadow: 0 0 10px rgba(129, 199, 132, 0.3); transition: background-color 0.3s ease;"
-           onmouseover="this.style.backgroundColor='#c8e6c9';"
-           onmouseout="this.style.backgroundColor='#e8f5e9';">
-          <img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" alt="LinkedIn" width="20" height="20" />
-          <span style="font-size: 0.9rem; color: #2e4a4f;">Anuj Kumar</span>
-        </a>
-      </div>
-      <div class="heading-text">
-        <h1>Arduino-Based-Smart-Watering-System 🌱</h1>
-        <sub style="font-size: 1.2rem; color: #e0f2f1;">Built with ❤️ by Anuj & Team</sub>
-        <p style="margin-top: 1rem; font-size: 1.3rem;">Making plant care effortless with Arduino magic!</p>
+<!-- Scroll progress -->
+<div id="scroll-bar"></div>
 
-      </div>
+<!-- Particle Canvas -->
+<canvas id="bg-canvas"></canvas>
+
+<div class="site">
+
+  <!-- ===================== NAV ===================== -->
+  <nav>
+    <div class="nav-logo">
+      <span class="leaf">🌿</span>
+      Eco<span>Pal</span>
     </div>
-  </header>
+    <div class="nav-links">
+      <a href="#overview">Overview</a>
+      <a href="#working">How It Works</a>
+      <a href="#demos">Demo</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#report">Report</a>
+      <a href="../index.html" class="nav-back">← Portfolio</a>
+    </div>
+    <div class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
 
+  <div class="mobile-nav" id="mobile-nav">
+    <a href="#overview"  onclick="closeNav()">Overview</a>
+    <a href="#working"   onclick="closeNav()">How It Works</a>
+    <a href="#demos"     onclick="closeNav()">Demo</a>
+    <a href="#gallery"   onclick="closeNav()">Gallery</a>
+    <a href="#report"    onclick="closeNav()">Report</a>
+    <a href="../index.html" onclick="closeNav()">← Back to Portfolio</a>
+  </div>
+
+  <!-- ===================== HERO ===================== -->
   <section class="hero">
-    <div class="report-section">
-      <div class="report-theme">
-        <h2>📘 Project Report: Automated Watering System</h2>
-        <p><strong>By:</strong> Anuj Kumar<br>
-           <strong>School:</strong> RPVV SEC 19<br>
-           <strong>Curriculum:</strong> Entrepreneur Mindset Curriculum (EMC)</p>
-
-        <p><strong>Introduction:</strong><br>
-          This project aims to solve a real-world problem — ensuring plants are watered even when we are not home.
-          I developed it as part of the EMC program, inspired by online automation videos and my interest in Arduino and electronics.
-        </p>
-
-        <p><strong>Objective:</strong><br>
-          To build a fully automatic watering system that:
-          <br>• Monitors soil moisture
-          <br>• Controls water flow using a servo motor
-          <br>• Indicates status via LEDs
-        </p>
-
-        <p><strong>Materials Used:</strong><br>
-          Arduino Uno, Soil Moisture Sensor, Servo Motor, Red & Green LEDs, Wiring, Water Valve & Pipe
-        </p>
-
-        <p><strong>Working Principle:</strong><br>
-          Moist soil conducts electricity — the sensor detects it, and Arduino rotates the servo 90° to shut the water supply (Green LED ON).
-          Dry soil doesn't conduct — sensor triggers Arduino to open the valve (Red LED ON). It’s fully automatic.
-        </p>
-
-        <p><strong>Inspiration & Learning:</strong><br>
-          The idea came from YouTube videos on automation. I explored Arduino deeply and learned how to code, use sensors,
-          and integrate electronics practically. EMC helped me bring this idea to life.
-        </p>
-
-        <p><strong>Conclusion:</strong><br>
-          A simple yet powerful solution for plant care using physics and technology. This project boosted my skills in innovation, coding, and electronics.
-        </p>
+    <div class="hero-badge">
+      <span class="dot"></span> Arduino × IoT Project
+    </div>
+    <h1 class="hero-title">
+      Smart Plant<br><span class="accent">Watering System</span>
+    </h1>
+    <p class="hero-sub">An automated irrigation solution that monitors soil moisture and controls water flow in real time — no manual effort required.</p>
+    <p class="hero-byline">Built with ❤️ by Anuj Kumar &nbsp;·&nbsp; RPVV SEC 19 &nbsp;·&nbsp; EMC Program &nbsp;·&nbsp; 2025</p>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-val">100%</div>
+        <div class="stat-label">Automated</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-val">Real-time</div>
+        <div class="stat-label">Moisture Sensing</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-val">2</div>
+        <div class="stat-label">Plant Modes</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-val">LED</div>
+        <div class="stat-label">Status Indicators</div>
       </div>
     </div>
-
-    <div class="gif-section">
-      <div class="gif-container">
-        <div class="gif-wrapper">
-          <img src="single_plant.gif" alt="Single Plant GIF" />
-        </div>
-        <div class="gif-label">Single Plant</div>
-      </div>
-
-      <div class="gif-container">
-        <div class="gif-wrapper1">
-          <img src="multi_plant.gif" alt="Multiple Plants GIF" />
-        </div>
-        <div class="gif-label">Multiple Plants</div>
-      </div>
-
-
-      <div class="gif-container">
-        <div class="gif-wrapper2">
-          <img src="real-life demonstration.gif" alt="Real-Life demonstration GIF" />
-        </div>
-        <div class="gif-label">Real-Life demonstration</div>
-      </div>
-
-
-      <div class="gif-container">
-        <div class="gif-wrapper3">
-          <img src="codes.gif" alt="codes GIF" />
-        </div>
-        <div class="gif-label">CODES-Single,multiple plants</div>
-        <a href="plant_code.zip" download class="cta-button" style="margin-top: 10px;">⬇️ Download Codes</a>
-      </div>
-      
+    <div class="hero-scroll">
+      <span>SCROLL</span>
+      <div class="scroll-line"></div>
     </div>
   </section>
 
-  <div class="image-gallery">
-    <div class="image-container"><img src="image1_1.jpg" alt="Image 1" /></div>
-    <div class="image-container"><img src="image2_1.jpg" alt="Image 2" /></div>
-    <div class="image-container"><img src="image3_1.jpg" alt="Image 3" /></div>
-    <div class="image-container"><img src="image4.jpg" alt="Image 4" /></div>
-    <div class="image-container"><img src="image5.jpg" alt="Image 5" /></div>
-  </div>
+  <!-- ===================== OVERVIEW ===================== -->
+  <section id="overview">
+    <div class="sec-header reveal">
+      <span class="sec-eyebrow">The Project</span>
+      <h2 class="sec-title">Project Overview</h2>
+      <div class="sec-divider"></div>
+    </div>
+    <div class="overview-grid">
+      <div class="ov-card reveal">
+        <div class="ov-icon">🎯</div>
+        <div class="ov-title">Objective</div>
+        <div class="ov-text">To build a <strong>fully automatic watering system</strong> that monitors soil moisture, controls water flow using a servo motor, and indicates status via <span class="hi">Green &amp; Red LEDs</span> — all without human intervention.</div>
+      </div>
+      <div class="ov-card reveal" style="transition-delay:.1s">
+        <div class="ov-icon">💡</div>
+        <div class="ov-title">Inspiration</div>
+        <div class="ov-text">The idea came from exploring YouTube automation videos and a deep interest in <span class="hi">Arduino electronics</span>. Developed as part of the <strong>Entrepreneur Mindset Curriculum (EMC)</strong> at RPVV SEC 19.</div>
+      </div>
+      <div class="ov-card reveal" style="transition-delay:.2s">
+        <div class="ov-icon">🌱</div>
+        <div class="ov-title">Problem Solved</div>
+        <div class="ov-text">Ensuring plants are watered correctly — even when we're not home. Over-watering and under-watering are both harmful. This system achieves <span class="hi">precise, automatic irrigation</span> based on real soil data.</div>
+      </div>
+      <div class="ov-card reveal" style="transition-delay:.3s">
+        <div class="ov-icon">📈</div>
+        <div class="ov-title">Skills Gained</div>
+        <div class="ov-text">Hands-on experience in <span class="hi">circuit design</span>, <span class="hi">C++ programming</span>, <span class="hi">sensor integration</span>, IoT architecture, and end-to-end <strong>project management</strong> — from concept to working prototype.</div>
+      </div>
+    </div>
+  </section>
 
+  <!-- ===================== HOW IT WORKS ===================== -->
+  <section id="working">
+    <div class="sec-header reveal">
+      <span class="sec-eyebrow">Under The Hood</span>
+      <h2 class="sec-title">Working Principle</h2>
+      <div class="sec-divider"></div>
+    </div>
+
+    <div class="flow reveal">
+      <div class="flow-step">
+        <div class="flow-icon">💧</div>
+        <div class="flow-title">Soil Probe</div>
+        <div class="flow-desc">Moisture sensor inserted into the soil reads conductivity levels</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="flow-icon">📡</div>
+        <div class="flow-title">Signal Sent</div>
+        <div class="flow-desc">Analog signal transmitted to the Arduino Uno microcontroller</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="flow-icon">🧠</div>
+        <div class="flow-title">Arduino Decides</div>
+        <div class="flow-desc">Code logic compares reading against moisture threshold</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="flow-icon">⚙️</div>
+        <div class="flow-title">Servo Rotates</div>
+        <div class="flow-desc">Servo motor rotates 90° to open or close the water valve</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="flow-icon">🔴🟢</div>
+        <div class="flow-title">LED Status</div>
+        <div class="flow-desc">Coloured LEDs visually indicate current watering state</div>
+      </div>
+    </div>
+
+    <div class="states-grid reveal">
+      <div class="state-card wet">
+        <div class="state-led led-green"></div>
+        <div>
+          <div class="state-info-title">🟢 Moist Soil — Water OFF</div>
+          <div class="state-info-text">Moist soil conducts electricity. Sensor triggers Arduino to rotate servo 90°, shutting the valve. Green LED turns ON.</div>
+        </div>
+      </div>
+      <div class="state-card dry">
+        <div class="state-led led-red"></div>
+        <div>
+          <div class="state-info-title">🔴 Dry Soil — Water ON</div>
+          <div class="state-info-text">Dry soil doesn't conduct. Sensor triggers Arduino to open the valve fully. Red LED turns ON until soil is moist.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== MATERIALS ===================== -->
+  <section id="materials">
+    <div class="sec-header reveal">
+      <span class="sec-eyebrow">The Build</span>
+      <h2 class="sec-title">Materials Used</h2>
+      <div class="sec-divider"></div>
+    </div>
+    <div class="mat-grid">
+      <div class="mat-chip reveal"><div class="mat-chip-icon">🤖</div><div class="mat-chip-name">Arduino Uno</div></div>
+      <div class="mat-chip reveal" style="transition-delay:.07s"><div class="mat-chip-icon">💧</div><div class="mat-chip-name">Soil Moisture Sensor</div></div>
+      <div class="mat-chip reveal" style="transition-delay:.14s"><div class="mat-chip-icon">⚙️</div><div class="mat-chip-name">Servo Motor</div></div>
+      <div class="mat-chip reveal" style="transition-delay:.21s"><div class="mat-chip-icon">🔴</div><div class="mat-chip-name">Red LED</div></div>
+      <div class="mat-chip reveal" style="transition-delay:.28s"><div class="mat-chip-icon">🟢</div><div class="mat-chip-name">Green LED</div></div>
+      <div class="mat-chip reveal" style="transition-delay:.35s"><div class="mat-chip-icon">🔌</div><div class="mat-chip-name">Wiring &amp; Resistors</div></div>
+      <div class="mat-chip reveal" style="transition-delay:.42s"><div class="mat-chip-icon">🚰</div><div class="mat-chip-name">Water Valve &amp; Pipe</div></div>
+      <div class="mat-chip reveal" style="transition-delay:.49s"><div class="mat-chip-icon">💻</div><div class="mat-chip-name">Arduino IDE</div></div>
+    </div>
+  </section>
+
+  <!-- ===================== DEMOS ===================== -->
+  <section id="demos">
+    <div class="sec-header reveal">
+      <span class="sec-eyebrow">See It In Action</span>
+      <h2 class="sec-title">Live Demonstrations</h2>
+      <div class="sec-divider"></div>
+    </div>
+    <div class="demos-grid">
+
+      <div class="demo-card reveal">
+        <div class="demo-media">
+          <img src="single_plant.gif" alt="Single Plant Demo" />
+        </div>
+        <div class="demo-info">
+          <div class="demo-num">DEMO 01</div>
+          <div class="demo-title">Single Plant Mode</div>
+          <div class="demo-desc">Automated watering for one plant with real-time moisture sensing and LED feedback.</div>
+        </div>
+      </div>
+
+      <div class="demo-card reveal" style="transition-delay:.1s">
+        <div class="demo-media">
+          <img src="multi_plant.gif" alt="Multiple Plants Demo" />
+        </div>
+        <div class="demo-info">
+          <div class="demo-num">DEMO 02</div>
+          <div class="demo-title">Multiple Plants Mode</div>
+          <div class="demo-desc">Extended system supporting multiple plants with independent sensor channels.</div>
+        </div>
+      </div>
+
+      <div class="demo-card reveal" style="transition-delay:.2s">
+        <div class="demo-media1">
+          <img src="real-life demonstration.gif" alt="Real-Life Demo" />
+        </div>
+        <div class="demo-info">
+          <div class="demo-num">DEMO 03</div>
+          <div class="demo-title">Real-Life Demonstration</div>
+          <div class="demo-desc">The physical prototype in action — soil probe, servo valve, and LED indicators working together.</div>
+        </div>
+      </div>
+
+      <div class="demo-card reveal" style="transition-delay:.3s">
+        <div class="demo-media2">
+          <img src="codes.gif" alt="Code Demo" />
+        </div>
+        <div class="demo-info">
+          <div class="demo-num">DEMO 04</div>
+          <div class="demo-title">Source Code</div>
+          <div class="demo-desc">Arduino C++ code for both single and multiple plant configurations, fully commented.</div>
+          <a href="plant_code.zip" download class="demo-download">⬇ Download Code (.zip)</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== GALLERY ===================== -->
+  <section id="gallery">
+    <div class="sec-header reveal">
+      <span class="sec-eyebrow">Behind The Build</span>
+      <h2 class="sec-title">Photo Gallery</h2>
+      <div class="sec-divider"></div>
+    </div>
+    <div class="gallery-grid">
+      <div class="gallery-item reveal"><img src="image1_1.jpg" alt="Build Photo 1" /></div>
+      <div class="gallery-item reveal" style="transition-delay:.07s"><img src="image2_1.jpg" alt="Build Photo 2" /></div>
+      <div class="gallery-item reveal" style="transition-delay:.14s"><img src="image3_1.jpg" alt="Build Photo 3" /></div>
+      <div class="gallery-item reveal" style="transition-delay:.21s"><img src="image4.jpg"   alt="Build Photo 4" /></div>
+      <div class="gallery-item reveal" style="transition-delay:.28s"><img src="image5.jpg"   alt="Build Photo 5" /></div>
+    </div>
+  </section>
+
+  <!-- ===================== REPORT ===================== -->
+  <section id="report">
+    <div class="sec-header reveal">
+      <span class="sec-eyebrow">Documentation</span>
+      <h2 class="sec-title">Project Report</h2>
+      <div class="sec-divider"></div>
+    </div>
+    <div class="report-inner reveal">
+      <div class="report-meta">
+        <span class="report-tag">Anuj Kumar</span>
+        <span class="report-tag">RPVV SEC 19</span>
+        <span class="report-tag">EMC Program</span>
+        <span class="report-tag">2025</span>
+        <span class="report-tag">Arduino + IoT</span>
+      </div>
+
+      <div class="report-block">
+        <div class="report-block-title">📘 Introduction</div>
+        <div class="report-block-text">This project aims to solve a real-world problem — ensuring plants are watered even when we are not home. I developed it as part of the EMC program, inspired by online automation videos and my growing interest in Arduino and electronics.</div>
+      </div>
+
+      <div class="report-block">
+        <div class="report-block-title">🎯 Objectives</div>
+        <div class="report-block-text">
+          <ul>
+            <li>Monitor soil moisture using a capacitive sensor</li>
+            <li>Control water flow automatically via a servo-operated valve</li>
+            <li>Indicate watering status clearly using coloured LEDs</li>
+            <li>Support both single and multi-plant configurations</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="report-block">
+        <div class="report-block-title">⚙️ Working Principle</div>
+        <div class="report-block-text">Moist soil conducts electricity — the sensor detects it and Arduino rotates the servo 90° to shut the water supply (Green LED ON). Dry soil doesn't conduct — the sensor triggers Arduino to open the valve (Red LED ON). The cycle repeats continuously and fully autonomously.</div>
+      </div>
+
+      <div class="report-block">
+        <div class="report-block-title">📚 Inspiration &amp; Learning</div>
+        <div class="report-block-text">The idea originated from YouTube automation channels. I explored Arduino deeply, learned how to write sensor-driven code, design circuits, and integrate electronics practically. The EMC curriculum provided the framework to bring this idea to a functional prototype.</div>
+      </div>
+
+      <div class="report-block">
+        <div class="report-block-title">✅ Conclusion</div>
+        <div class="report-block-text">A simple yet powerful solution for plant care, combining physics and technology. This project significantly boosted my skills in innovation, coding, circuit design, and independent project execution — and proved that real-world problems can be solved with accessible technology.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FOOTER ===================== -->
   <footer>
-    &copy; 2025 EcoPal | Designed with 💚 for plant lovers    
+    <div class="footer-brand">🌿 Eco<span>Pal</span></div>
+    <p class="footer-copy">© 2025 EcoPal — Built with 💚 for plant lovers by Anuj Kumar</p>
+    <a href="https://www.linkedin.com/in/anuj-kumar-1365b535a/" target="_blank" class="footer-link">
+      💼 LinkedIn →
+    </a>
   </footer>
-</div>
+
+</div><!-- end .site -->
 
 <!-- Lightbox -->
 <div id="lightbox">
-  <span id="close-lightbox">&times;</span>
-  <img id="lightbox-img" src="" alt="Full Size Image" />
+  <span id="lb-close">&times;</span>
+  <img id="lb-img" src="" alt="" />
 </div>
 
+<!-- ===================== SCRIPTS ===================== -->
 <script>
-  const lightbox = document.getElementById("lightbox");
-  const lightboxImg = document.getElementById("lightbox-img");
-  const closeBtn = document.getElementById("close-lightbox");
+/* Scroll progress */
+window.addEventListener('scroll', () => {
+  const pct = window.scrollY / (document.body.scrollHeight - innerHeight) * 100;
+  document.getElementById('scroll-bar').style.width = pct + '%';
+});
 
-  document.querySelectorAll(".image-gallery img").forEach(img => {
-    img.addEventListener("click", () => {
-      lightbox.style.display = "flex";
-      lightboxImg.src = img.src;
-      lightboxImg.alt = img.alt;
+/* Mobile nav */
+const ham   = document.getElementById('hamburger');
+const mNav  = document.getElementById('mobile-nav');
+ham.addEventListener('click', () => {
+  ham.classList.toggle('open');
+  mNav.classList.toggle('open');
+});
+function closeNav() { ham.classList.remove('open'); mNav.classList.remove('open'); }
+
+/* Reveal */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+/* Lightbox */
+const lb    = document.getElementById('lightbox');
+const lbImg = document.getElementById('lb-img');
+document.querySelectorAll('.gallery-item img').forEach(img => {
+  img.addEventListener('click', () => {
+    lbImg.src = img.src; lbImg.alt = img.alt;
+    lb.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  });
+});
+function closeLb() { lb.classList.remove('active'); document.body.style.overflow = ''; }
+document.getElementById('lb-close').addEventListener('click', closeLb);
+lb.addEventListener('click', e => { if (e.target !== lbImg) closeLb(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLb(); });
+
+/* Particle canvas */
+(function() {
+  const c = document.getElementById('bg-canvas');
+  const ctx = c.getContext('2d');
+  let W, H, pts;
+  function resize() { W = c.width = innerWidth; H = c.height = innerHeight; }
+  function init() {
+    pts = Array.from({length: 60}, () => ({
+      x: Math.random()*W, y: Math.random()*H,
+      vx: (Math.random()-.5)*.35, vy: (Math.random()-.5)*.35,
+      r: Math.random()*1.6+0.5,
+    }));
+  }
+  function draw() {
+    ctx.clearRect(0,0,W,H);
+    pts.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x<0) p.x=W; if (p.x>W) p.x=0;
+      if (p.y<0) p.y=H; if (p.y>H) p.y=0;
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle = 'rgba(74,222,128,0.35)';
+      ctx.fill();
     });
-  });
-
-  closeBtn.addEventListener("click", () => {
-    lightbox.style.display = "none";
-  });
-
-  lightbox.addEventListener("click", (e) => {
-    if (e.target !== lightboxImg) {
-      lightbox.style.display = "none";
+    for (let i=0;i<pts.length;i++) {
+      for (let j=i+1;j<pts.length;j++) {
+        const dx=pts[i].x-pts[j].x, dy=pts[i].y-pts[j].y;
+        const d=Math.sqrt(dx*dx+dy*dy);
+        if (d<120) {
+          ctx.beginPath();
+          ctx.moveTo(pts[i].x,pts[i].y);
+          ctx.lineTo(pts[j].x,pts[j].y);
+          ctx.strokeStyle=`rgba(74,222,128,${0.1*(1-d/120)})`;
+          ctx.lineWidth=0.7; ctx.stroke();
+        }
+      }
     }
-  });
+    requestAnimationFrame(draw);
+  }
+  resize(); init(); draw();
+  window.addEventListener('resize', () => { resize(); init(); });
+})();
 </script>
-
 </body>
 </html>
