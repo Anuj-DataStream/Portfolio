@@ -4,83 +4,212 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Anuj Kumar | Engineering Dossier</title>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap"
-    rel="stylesheet">
+  <title>Anuj Kumar | Engineering Dossier — Science Exhibition 2023</title>
+  <meta name="description" content="A personal engineering portfolio case study: how Anuj Kumar reverse engineered, rebuilt, and executed a multi-model smart transportation prototype in one week.">
+  <!-- Premium font system: Syne (display) + Bebas Neue (numerics) + DM Mono (labels) + Manrope (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
+  <!-- ═══ LOADING SCREEN ═══ -->
+  <div class="loader" id="loader">
+    <div class="loader-inner">
+      <div class="loader-logo">
+        <span class="loader-bracket">[</span>
+        <span class="loader-name">ANUJ KUMAR</span>
+        <span class="loader-bracket">]</span>
+      </div>
+      <div class="loader-bar-wrap">
+        <div class="loader-bar" id="loaderBar"></div>
+      </div>
+      <div class="loader-status" id="loaderStatus">INITIALIZING DOSSIER...</div>
+    </div>
+  </div>
+
+  <!-- ═══ CUSTOM CURSOR ═══ -->
   <div class="cursor" id="cursor"></div>
   <div class="cursor-ring" id="cursorRing"></div>
+  <div class="cursor-trail" id="cursorTrail"></div>
 
+  <!-- ═══ SCROLL PROGRESS BAR ═══ -->
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <!-- ═══ CANVAS PARTICLE BACKGROUND ═══ -->
   <canvas id="bg"></canvas>
 
-  <!-- NAV -->
-  <nav>
-    <div class="nav-logo">ANUJ KUMAR // DOSSIER</div>
-    <div class="nav-status">
-      <div class="nav-dot"></div>
-      <span class="nav-txt">SCIENCE EX. 2023 // ZONAL LEVEL // 2ND POSITION</span>
+  <!-- ═══ AMBIENT LAYERS ═══ -->
+  <div class="ambient-top" id="ambientTop"></div>
+  <div class="ambient-mid" id="ambientMid"></div>
+  <div class="ambient-accent" id="ambientAccent"></div>
+  <div class="ambient-bottom" id="ambientBottom"></div>
+  <div class="ambient-violet" id="ambientViolet"></div>
+
+  <!-- ═══ NOISE TEXTURE ═══ -->
+  <div class="noise-overlay"></div>
+
+  <!-- ═══ SIDE NAV DOTS ═══ -->
+  <nav class="side-nav" id="sideNav" aria-label="Section navigation">
+    <div class="side-nav-item active" data-section="hero" title="Hero">
+      <span class="side-nav-dot"></span>
+      <span class="side-nav-label">INTRO</span>
+    </div>
+    <div class="side-nav-item" data-section="challenge" title="Origin">
+      <span class="side-nav-dot"></span>
+      <span class="side-nav-label">ORIGIN</span>
+    </div>
+    <div class="side-nav-item" data-section="timeline" title="Timeline">
+      <span class="side-nav-dot"></span>
+      <span class="side-nav-label">TIMELINE</span>
+    </div>
+    <div class="side-nav-item" data-section="modules" title="Engineering">
+      <span class="side-nav-dot"></span>
+      <span class="side-nav-label">MODULES</span>
+    </div>
+    <div class="side-nav-item" data-section="team" title="Team">
+      <span class="side-nav-dot"></span>
+      <span class="side-nav-label">TEAM</span>
+    </div>
+    <div class="side-nav-item" data-section="exhibition" title="Exhibition">
+      <span class="side-nav-dot"></span>
+      <span class="side-nav-label">DAY</span>
+    </div>
+    <div class="side-nav-item" data-section="award" title="Result">
+      <span class="side-nav-dot"></span>
+      <span class="side-nav-label">RESULT</span>
+    </div>
+    <div class="side-nav-item" data-section="lessons" title="Lessons">
+      <span class="side-nav-dot"></span>
+      <span class="side-nav-label">LESSONS</span>
     </div>
   </nav>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-eyebrow">ENGINEERING CASE STUDY — NOVEMBER 2023</div>
-    <div class="hero-badge">🏆 &nbsp;2ND POSITION — ZONAL LEVEL SCIENCE EXHIBITION</div>
-    <h1 class="glitch"
-      data-text="Technical Restoration &amp; Lead Execution of Multi-Model Smart Transportation Prototypes">
-      Technical <span class="hl-cyan">Restoration</span> &amp; Lead Execution of<br>
-      <span class="hl-orange">Multi-Model</span> Smart Transportation Prototypes
+  <!-- ═══ NAVIGATION ═══ -->
+  <nav id="mainNav" role="navigation" aria-label="Main navigation">
+    <div class="nav-logo">
+      <span class="nav-logo-bracket">[</span>
+      ANUJ KUMAR
+      <span class="nav-logo-bracket">]</span>
+    </div>
+    <div class="nav-center-line"></div>
+    <div class="nav-right">
+      <div class="nav-status">
+        <div class="nav-dot" aria-label="Live status indicator"></div>
+        <span class="nav-txt">SCIENCE EX. 2023 // ZONAL // 3RD POSITION</span>
+      </div>
+      <a href="#award" class="nav-cta">VIEW RESULT</a>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════════
+       HERO
+  ════════════════════════════════════ -->
+  <section class="hero" id="hero">
+    <div class="hero-ambient-ring"></div>
+    <div class="hero-ambient-ring hero-ambient-ring--2"></div>
+    <div class="hero-grid-overlay"></div>
+    <div class="hero-perspective-floor"></div>
+
+    <div class="hero-top-row">
+      <div class="hero-eyebrow" id="heroEyebrow">ENGINEERING CASE STUDY</div>
+      <div class="hero-sep"></div>
+      <div class="hero-date-badge">NOV 2023</div>
+    </div>
+
+    <div class="hero-badge">
+      <span class="badge-pulse"></span>
+      🏆 &nbsp;3RD POSITION — ZONAL LEVEL SCIENCE EXHIBITION
+    </div>
+
+    <h1 class="glitch" data-text="Technical Restoration & Lead Execution of Multi-Model Smart Transportation Prototypes">
+      Technical <span class="hl-cyan">Restoration</span> &amp;<br class="hero-br">
+      Lead Execution of<br>
+      <span class="hl-orange">Multi-Model</span> Smart<br class="hero-br-2">
+      Transportation Prototypes
     </h1>
+
     <p class="hero-desc">A personal engineering portfolio case study documenting how a dead inherited science exhibition
       project was reverse engineered, rebuilt, stabilized, and successfully executed under one-week deadline pressure at
-      Rajkiya Pratibha Vikas Vidyalaya, Sector-19 Dwarka for the Zonal Level Science Exhibition held on 29 November
-      2023.</p>
+      Rajkiya Pratibha Vikas Vidyalaya, Sector-19 Dwarka for the Zonal Level Science Exhibition held on 29 November 2023.</p>
+
     <div class="hero-actions">
-      <a href="#challenge" class="btn-primary">EXPLORE DOSSIER</a>
-      <a href="#award" class="btn-outline">VIEW RESULT</a>
+      <a href="#challenge" class="btn-primary" data-magnetic data-ripple>
+        <span class="btn-text">EXPLORE DOSSIER</span>
+        <span class="btn-arrow">→</span>
+      </a>
+      <a href="#award" class="btn-outline" data-magnetic>VIEW RESULT</a>
     </div>
 
     <div class="hero-code-block">
-      <div>// SYSTEM STATUS: RESTORED</div>
-      <div>modules_repaired: 5</div>
-      <div>deadline_remaining: ~1 week</div>
-      <div>outcome: SUCCESS</div>
-      <div>project_code: <span style="color:var(--orange)">09 // CARONYCLEANSER</span></div>
+      <div class="code-header">
+        <span class="code-dot red"></span>
+        <span class="code-dot yellow"></span>
+        <span class="code-dot green-dot"></span>
+        <span class="code-sep"></span>
+        <span class="code-filename">status.sys</span>
+      </div>
+      <div class="code-body">
+        <div class="code-line typed-line" style="--td:0.1s"><span class="code-comment">// SYSTEM STATUS: RESTORED</span></div>
+        <div class="code-line typed-line" style="--td:0.55s"><span class="code-key">modules_repaired</span><span class="code-colon">:</span> <span class="code-val-cyan">5</span></div>
+        <div class="code-line typed-line" style="--td:0.85s"><span class="code-key">deadline_remaining</span><span class="code-colon">:</span> <span class="code-val-cyan">~1 week</span></div>
+        <div class="code-line typed-line" style="--td:1.15s"><span class="code-key">outcome</span><span class="code-colon">:</span> <span class="code-val-green">SUCCESS ✓</span></div>
+        <div class="code-line typed-line" style="--td:1.45s"><span class="code-key">project_code</span><span class="code-colon">:</span> <span class="code-val-orange">09 // CARONYCLEANSER</span></div>
+        <div class="code-cursor-line typed-line" style="--td:1.75s"><span class="code-cursor">▌</span></div>
+      </div>
+    </div>
+
+    <div class="hero-scroll-hint">
+      <div class="scroll-line"></div>
+      <span>SCROLL</span>
+    </div>
+
+    <!-- Floating stat badges -->
+    <div class="hero-float-badge hero-float-badge--1">
+      <span class="hfb-num cyan">7</span>
+      <span class="hfb-label">DAYS</span>
+    </div>
+    <div class="hero-float-badge hero-float-badge--2">
+      <span class="hfb-num orange">5</span>
+      <span class="hfb-label">MODULES</span>
     </div>
   </section>
 
-  <!-- STATS STRIP -->
-  <div class="stats-strip reveal">
+  <!-- ═══ STATS STRIP ═══ -->
+  <div class="stats-strip reveal" id="statsStrip">
     <div class="stats-inner">
       <div class="stat-item">
-        <span class="stat-num cyan" data-target="7">0</span>
+        <span class="stat-num cyan" data-target="7" data-suffix="+">0</span>
         <span class="stat-label">DAYS DEADLINE</span>
       </div>
+      <div class="stat-sep"></div>
       <div class="stat-item">
-        <span class="stat-num orange" data-target="5">0</span>
+        <span class="stat-num orange" data-target="5" data-suffix="+">0</span>
         <span class="stat-label">MODULES RESTORED</span>
       </div>
+      <div class="stat-sep"></div>
       <div class="stat-item">
-        <span class="stat-num gold" data-target="90">0</span>
-        <span class="stat-label">% TECH CONTRIBUTION</span>
+        <span class="stat-num gold" data-target="90" data-suffix="%">0</span>
+        <span class="stat-label">TECH CONTRIBUTION</span>
       </div>
+      <div class="stat-sep"></div>
       <div class="stat-item">
-        <span class="stat-num green">2nd</span>
+        <span class="stat-num green stat-static">3rd</span>
         <span class="stat-label">FINAL POSITION</span>
       </div>
     </div>
   </div>
 
-  <!-- CHALLENGE ORIGIN -->
-  <section id="challenge">
+  <!-- ═══════════════════════════════════
+       01 — CHALLENGE ORIGIN
+  ════════════════════════════════════ -->
+  <section id="challenge" data-sec-num="01">
     <div class="sec-header reveal">
       <div class="sec-label">01 / ORIGIN</div>
       <h2 class="sec-title">The <span>Challenge</span> Origin</h2>
+      <p class="sec-subtitle">How a broken lab project became a personal mission</p>
     </div>
     <div class="challenge-grid reveal">
       <div class="textbox">
@@ -90,10 +219,11 @@
         When they saw the actual condition of the model, they quickly realized that none of them understood Arduino
         circuits, sensors, or how the prototype was originally supposed to function. Since I was already known for my
         strong interest in technology experiments and hardware curiosity, they approached me for technical help. What
-        started as one lab visit gradually turned into <strong style="color:#fff">full technical ownership</strong> —
+        started as one lab visit gradually turned into <strong class="text-white">full technical ownership</strong> —
         because there was no one else who could understand or repair it in the given time.
       </div>
       <div class="info-panel">
+        <div class="info-panel-corner"></div>
         <div class="info-row">
           <span class="info-key">SCHOOL</span>
           <span class="info-val">RPVV Sector-19 Dwarka</span>
@@ -108,23 +238,28 @@
         </div>
         <div class="info-row">
           <span class="info-key">PROJECT CODE</span>
-          <span class="info-val" style="color:var(--orange)">09 — CARONYCLEANSER</span>
+          <span class="info-val info-val--orange">09 — CARONYCLEANSER</span>
         </div>
+        <div class="info-divider"></div>
         <div class="info-row">
           <span class="info-key">STATUS AT HANDOVER</span>
-          <span class="info-val" style="color:#ff4444">NON-FUNCTIONAL</span>
+          <span class="info-val status-dead">◉ NON-FUNCTIONAL</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- REBUILD TIMELINE -->
-  <section>
+  <!-- ═══════════════════════════════════
+       02 — REBUILD TIMELINE
+  ════════════════════════════════════ -->
+  <section id="timeline" data-sec-num="02">
     <div class="sec-header reveal">
       <div class="sec-label">02 / ANALYSIS</div>
       <h2 class="sec-title">Rebuild <span>Decision</span> Timeline</h2>
+      <p class="sec-subtitle">Four phases from dead hardware to exhibition-ready</p>
     </div>
-    <div class="timeline reveal">
+    <div class="timeline reveal" id="timelineEl">
+      <div class="timeline-progress-line" id="timelineProgress"></div>
       <div class="tl-item">
         <div class="tl-tag">PHASE 01 // INSPECTION</div>
         <div class="tl-title">Condition Assessment</div>
@@ -132,15 +267,17 @@
           several light connections were dead, the Arduino-based road blocker system was not responding, and the
           integrated transportation modules had no clear labeling or wiring map. Even the Avishkaar BLE robotic unit
           stored with the project was not properly arranged.</div>
+        <div class="tl-chip">NON-FUNCTIONAL INHERITED UNIT</div>
       </div>
       <div class="tl-item">
         <div class="tl-tag">PHASE 02 // DECISION</div>
         <div class="tl-title">Full Rebuild from Scratch</div>
         <div class="tl-body">My first instinct was to try basic repair and reconnect broken wires, but after observing
           repeated failures I realized that random patchwork would not make the project stable. With no documentation
-          and no senior available for explanation, I took the decision to <strong style="color:#fff">dismantle the dead
+          and no senior available for explanation, I took the decision to <strong class="text-white">dismantle the dead
             understanding completely</strong>, study every subsystem separately, and rebuild the working logic from
           scratch.</div>
+        <div class="tl-chip tl-chip--orange">CRITICAL DECISION POINT</div>
       </div>
       <div class="tl-item">
         <div class="tl-tag">PHASE 03 // LEARNING</div>
@@ -150,98 +287,135 @@
           code snippets, and performing hit-and-trial breadboard experiments. I separately tested LED blinking, servo
           rotation, ultrasonic object detection, and buzzer activation until I understood each component before
           reconnecting them into the main model.</div>
+        <div class="tl-chip tl-chip--cyan">~40 HRS INTENSIVE LEARNING</div>
       </div>
       <div class="tl-item" style="padding-bottom:0">
         <div class="tl-tag">PHASE 04 // EXECUTION</div>
-        <div class="tl-title">Final Stabilization & Exhibition</div>
+        <div class="tl-title">Final Stabilization &amp; Exhibition</div>
         <div class="tl-body">The final board was transported to the host school in a partially stabilized condition.
           Final preparation time was spent in continuous troubleshooting — reconnecting wires, retesting the buzzer,
           aligning the servo barrier, and making the board presentable before judges arrived.</div>
+        <div class="tl-chip tl-chip--gold">3RD POSITION SECURED</div>
       </div>
     </div>
   </section>
 
-  <!-- MODULES -->
-  <section>
+  <!-- ═══════════════════════════════════
+       03 — MODULES
+  ════════════════════════════════════ -->
+  <section id="modules" data-sec-num="03">
     <div class="sec-header reveal">
       <div class="sec-label">03 / ENGINEERING</div>
       <h2 class="sec-title">Subsystem <span>Breakdown</span></h2>
+      <p class="sec-subtitle">Five restored modules powering the CARONYCLEANSER ecosystem</p>
     </div>
     <div class="modules-grid">
-      <div class="module-card reveal reveal-delay-1">
+      <div class="module-card reveal reveal-delay-1" data-tilt>
+        <div class="module-card-accent"></div>
+        <div class="module-status module-status--active"></div>
         <div class="module-num">MODULE 01</div>
         <h4>Automated Road Blocker</h4>
         <p>An ultrasonic sensor detected incoming vehicles and triggered an Arduino-controlled servo barrier that
           rotated upward to block unsafe movement. This was the most difficult module — both circuit connections and
           Arduino logic were unstable and required repeated testing.</p>
-        <div class="tags"><span class="tag">Arduino Uno</span><span class="tag">Ultrasonic HC-SR04</span><span
-            class="tag orange">Servo Motor</span></div>
+        <div class="tags">
+          <span class="tag">Arduino Uno</span>
+          <span class="tag">Ultrasonic HC-SR04</span>
+          <span class="tag orange">Servo Motor</span>
+        </div>
       </div>
-      <div class="module-card reveal reveal-delay-2">
+      <div class="module-card reveal reveal-delay-2" data-tilt>
+        <div class="module-card-accent"></div>
+        <div class="module-status module-status--active"></div>
         <div class="module-num">MODULE 02</div>
         <h4>Zebra Crossing Alert</h4>
         <p>An IR sensor beneath the zebra crossing detected object presence and activated a buzzer alert for approaching
           traffic. This pedestrian awareness mechanism frequently failed during early tests because of loose battery and
           sensor alignment issues.</p>
-        <div class="tags"><span class="tag">IR Sensor</span><span class="tag orange">Buzzer</span><span
-            class="tag">Active Alert</span></div>
+        <div class="tags">
+          <span class="tag">IR Sensor</span>
+          <span class="tag orange">Buzzer</span>
+          <span class="tag">Active Alert</span>
+        </div>
       </div>
-      <div class="module-card reveal reveal-delay-3">
+      <div class="module-card reveal reveal-delay-3" data-tilt>
+        <div class="module-card-accent"></div>
+        <div class="module-status module-status--active"></div>
         <div class="module-num">MODULE 03</div>
         <h4>Automatic Street Lights</h4>
         <p>Blue LED street lights illuminated automatically when ambient light dropped using an LDR sensing arrangement.
           Multiple LED joints had to be resoldered and rewired to make the roadway lighting look synchronized across the
           full model.</p>
-        <div class="tags"><span class="tag">LDR Sensor</span><span class="tag">LED Array</span><span
-            class="tag gold">Resolder</span></div>
+        <div class="tags">
+          <span class="tag">LDR Sensor</span>
+          <span class="tag">LED Array</span>
+          <span class="tag gold">Resolder</span>
+        </div>
       </div>
-      <div class="module-card reveal reveal-delay-1">
+      <div class="module-card reveal reveal-delay-1" data-tilt>
+        <div class="module-card-accent"></div>
+        <div class="module-status module-status--active"></div>
         <div class="module-num">MODULE 04</div>
         <h4>Hydraulic Parking System</h4>
         <p>A syringe-water pressure hydraulic lift demonstrated vertical parking optimization using a manually actuated
           single-platform system. Though simple mechanically, it improved the visual appeal of the board by adding
           another transportation concept.</p>
-        <div class="tags"><span class="tag orange">Hydraulics</span><span class="tag">Pressure Lift</span><span
-            class="tag">Manual Actuator</span></div>
+        <div class="tags">
+          <span class="tag orange">Hydraulics</span>
+          <span class="tag">Pressure Lift</span>
+          <span class="tag">Manual Actuator</span>
+        </div>
       </div>
-      <div class="module-card reveal reveal-delay-2">
+      <div class="module-card reveal reveal-delay-2" data-tilt>
+        <div class="module-card-accent"></div>
+        <div class="module-status module-status--active"></div>
         <div class="module-num">MODULE 05</div>
         <h4>Avishkaar BLE Robot</h4>
         <p>A four-wheel Avishkaar 2.0 BLE robotic mobility unit controlled via mobile phone strengthened the overall
           technology impact. Reassembled and tested separately so that the final display had an additional moving
           robotics element during demonstration.</p>
-        <div class="tags"><span class="tag">BLE Brain 2.0</span><span class="tag orange">Mobile Control</span><span
-            class="tag">4-Wheel Drive</span></div>
+        <div class="tags">
+          <span class="tag">BLE Brain 2.0</span>
+          <span class="tag orange">Mobile Control</span>
+          <span class="tag">4-Wheel Drive</span>
+        </div>
       </div>
-      <div class="module-card reveal reveal-delay-3"
-        style="background:rgba(255,215,0,0.03);border-color:rgba(255,215,0,0.2)">
-        <div class="module-num" style="color:var(--gold)">CORE THEME</div>
-        <h4 style="color:var(--gold)">CARONYCLEANSER</h4>
+      <div class="module-card reveal reveal-delay-3 module-card--gold" data-tilt>
+        <div class="module-card-accent module-card-accent--gold"></div>
+        <div class="module-status module-status--gold"></div>
+        <div class="module-num module-num--gold">CORE THEME</div>
+        <h4 class="module-title--gold">CARONYCLEANSER</h4>
         <p>The central thematic roadway integrated all transportation modules into a single smart mobility ecosystem
           presented as cleaner and safer urban transportation. Displayed at the exhibition venue under Project Code 09 —
           the unit that earned 2nd place at zonal level.</p>
-        <div class="tags"><span class="tag gold">Code 09</span><span class="tag gold">Smart Transport</span><span
-            class="tag gold">Urban Mobility</span></div>
+        <div class="tags">
+          <span class="tag gold">Code 09</span>
+          <span class="tag gold">Smart Transport</span>
+          <span class="tag gold">Urban Mobility</span>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- TEAM ROLES -->
-  <section>
+  <!-- ═══════════════════════════════════
+       04 — TEAM ROLES
+  ════════════════════════════════════ -->
+  <section id="team" data-sec-num="04">
     <div class="sec-header reveal">
       <div class="sec-label">04 / TEAM</div>
       <h2 class="sec-title">Role <span>Distribution</span></h2>
+      <p class="sec-subtitle">An honest account of who carried the technical load</p>
     </div>
-    <div class="textbox reveal" style="margin-bottom:0">
+    <div class="textbox reveal">
       Although the official science exhibition team consisted of Anmol, Yashika, and me, the actual technical workload
-      distribution was highly uneven. Approximately <strong style="color:var(--cyan)">85–90% of the technical
+      distribution was highly uneven. Approximately <strong class="text-cyan">85–90% of the technical
         understanding, debugging, rewiring, code arrangement, subsystem restoration, and final troubleshooting</strong>
       was handled by me. Anmol and Yashika supported by bringing materials, helping in poster/file preparation, learning
       the explanation points, and doing the final decorative arrangement when required. During the last stage, 3–4 more
       classmates briefly joined only for decoration support, but the engineering execution remained concentrated around
       the core technical restoration process I was leading.
     </div>
-    <div class="role-visual reveal" style="margin-top:20px">
+    <div class="role-visual reveal">
       <div class="role-header">
         <span class="role-label">ANUJ KUMAR — TECHNICAL CONTRIBUTION</span>
         <span class="role-pct" id="rolePct">0%</span>
@@ -250,27 +424,48 @@
         <div class="role-fill" id="roleBar"></div>
       </div>
       <div class="role-items">
-        <div class="role-item">Arduino Debugging &amp; Circuit Restoration</div>
-        <div class="role-item">Sensor Integration &amp; Code Logic</div>
-        <div class="role-item">Subsystem Testing &amp; Troubleshooting</div>
-        <div class="role-item">Module Wiring &amp; Resoldering</div>
-        <div class="role-item">Robot Reassembly &amp; Testing</div>
-        <div class="role-item">Exhibition-Day Live Troubleshooting</div>
+        <div class="role-item" style="--ri:0">
+          <span class="role-item-icon">⚡</span>
+          Arduino Debugging &amp; Circuit Restoration
+        </div>
+        <div class="role-item" style="--ri:1">
+          <span class="role-item-icon">🔌</span>
+          Sensor Integration &amp; Code Logic
+        </div>
+        <div class="role-item" style="--ri:2">
+          <span class="role-item-icon">🧪</span>
+          Subsystem Testing &amp; Troubleshooting
+        </div>
+        <div class="role-item" style="--ri:3">
+          <span class="role-item-icon">🔧</span>
+          Module Wiring &amp; Resoldering
+        </div>
+        <div class="role-item" style="--ri:4">
+          <span class="role-item-icon">🤖</span>
+          Robot Reassembly &amp; Testing
+        </div>
+        <div class="role-item" style="--ri:5">
+          <span class="role-item-icon">🛡️</span>
+          Exhibition-Day Live Troubleshooting
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- EXHIBITION DAY -->
-  <section>
+  <!-- ═══════════════════════════════════
+       05 — EXHIBITION DAY
+  ════════════════════════════════════ -->
+  <section id="exhibition" data-sec-num="05">
     <div class="sec-header reveal">
       <div class="sec-label">05 / EXHIBITION</div>
       <h2 class="sec-title">Exhibition Day: <span>Pressure</span> &amp; Recovery</h2>
+      <p class="sec-subtitle">29 November 2023 — the most critical day of execution</p>
     </div>
     <div class="challenge-grid reveal">
       <div class="textbox">
         The final board was transported to the host school laboratory in a partially stabilized condition. Decoration
         remained incomplete, multiple modules were still unstable, and nearby competitors openly <strong
-          style="color:var(--orange)">mocked the unfinished appearance</strong> of the project during setup, which
+          class="text-orange">mocked the unfinished appearance</strong> of the project during setup, which
         significantly reduced our confidence.<br><br>
         Instead of entering the venue with celebration, we entered with the fear that the project might fail publicly.
         Final preparation time was spent in continuous troubleshooting — reconnecting wires, retesting the buzzer,
@@ -279,7 +474,7 @@
       </div>
       <div class="textbox">
         Although Anmol and Yashika handled most front-facing explanation, I remained the <strong
-          style="color:var(--cyan)">technical fallback throughout the evaluation</strong> whenever a module needed
+          class="text-cyan">technical fallback throughout the evaluation</strong> whenever a module needed
         urgent correction or judges asked for deeper understanding of the electronics and sensor logic.<br><br>
         This was a defining test of composure — operating under public scrutiny, competitor mockery, and the constant
         threat of live module failure, while still delivering a technically sound demonstration that impressed the
@@ -291,107 +486,184 @@
         <video autoplay loop muted playsinline>
           <source src="assets/exhibition_day.mp4" type="video/mp4">
         </video>
+        <div class="gallery-overlay">
+          <div class="gallery-overlay-inner">
+            <span class="gallery-play-icon">▶</span>
+            <span class="gallery-label">EXHIBITION DAY</span>
+          </div>
+        </div>
       </div>
       <div class="gallery-ph" onclick="openLightboxVideo(this)">
         <video autoplay loop muted playsinline>
           <source src="assets/Robot_BLE.mp4" type="video/mp4">
         </video>
+        <div class="gallery-overlay">
+          <div class="gallery-overlay-inner">
+            <span class="gallery-play-icon">▶</span>
+            <span class="gallery-label">BLE ROBOT DEMO</span>
+          </div>
+        </div>
       </div>
       <div class="gallery-ph" onclick="openLightboxVideo(this)">
         <video autoplay loop muted playsinline>
           <source src="assets/working.mp4" type="video/mp4">
         </video>
+        <div class="gallery-overlay">
+          <div class="gallery-overlay-inner">
+            <span class="gallery-play-icon">▶</span>
+            <span class="gallery-label">SYSTEM WORKING</span>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- AWARD -->
-  <section id="award">
+  <!-- ═══════════════════════════════════
+       06 — AWARD
+  ════════════════════════════════════ -->
+  <section id="award" data-sec-num="06">
     <div class="sec-header reveal">
       <div class="sec-label">06 / RESULT</div>
       <h2 class="sec-title">The <span>Result</span></h2>
+      <p class="sec-subtitle">Against all odds — and our own expectations</p>
     </div>
     <div class="award-hero reveal">
+      <div class="award-hero-bg"></div>
+      <div class="award-orbit award-orbit--1"></div>
+      <div class="award-orbit award-orbit--2"></div>
+      <div class="award-rays"></div>
       <div class="award-trophy">🏆</div>
-      <h3>2nd Position — Zonal Level</h3>
+      <div class="award-position">2<span>nd</span></div>
+      <h3>Position — Zonal Level</h3>
       <p>Against our own expectations, the project secured Second Position at the Zonal Level Science Exhibition. The
         result itself was shocking because until the final hours we were simply trying not to embarrass ourselves with a
         broken setup.</p>
-      <div class="award-note">⚠ &nbsp; RECOGNITION GAP: Certificates issued to officially registered members only</div>
+      <div class="award-note">
+        <span class="award-note-icon">⚠</span>
+        RECOGNITION GAP: Certificates issued to officially registered members only
+      </div>
     </div>
-    <div class="textbox reveal" style="margin-top:20px;border-left:3px solid var(--orange)">
+    <div class="textbox reveal textbox--orange-accent">
       The emotional turning point came during the award ceremony: since only Anmol and Yashika had been officially
       registered before my involvement, they were called on stage to receive certificates and the formal trophy. <strong
-        style="color:#fff">I remained without official recognition despite being the major technical
+        class="text-white">I remained without official recognition despite being the major technical
         contributor.</strong><br><br>
       This became one of the strongest professional lessons of my early journey — <strong
-        style="color:var(--cyan)">technical contribution alone is not enough</strong>; work must also be documented,
+        class="text-cyan">technical contribution alone is not enough</strong>; work must also be documented,
       represented, and visibly claimed if one wants rightful ownership in collaborative environments.
     </div>
     <!-- Gallery -->
-    <div class="gallery-grid reveal">
+    <div class="gallery-grid gallery-grid--award reveal">
       <div class="gallery-ph" onclick="openLightbox('assets/trophy.jpeg', 'Trophy')">
-        <img src="assets/trophy.jpeg" alt="Trophy">
+        <img src="assets/trophy.jpeg" alt="Trophy" loading="lazy">
+        <div class="gallery-overlay">
+          <div class="gallery-overlay-inner">
+            <span class="gallery-play-icon">⊕</span>
+            <span class="gallery-label">TROPHY</span>
+          </div>
+        </div>
       </div>
       <div class="gallery-ph" onclick="openLightbox('assets/team_members.jpeg', 'Team Members')">
-        <img src="assets/team_members.jpeg" alt="Team Members">
+        <img src="assets/team_members.jpeg" alt="Team Members" loading="lazy">
+        <div class="gallery-overlay">
+          <div class="gallery-overlay-inner">
+            <span class="gallery-play-icon">⊕</span>
+            <span class="gallery-label">TEAM PHOTO</span>
+          </div>
+        </div>
       </div>
       <div class="gallery-ph" onclick="openLightbox('assets/all_trophies.jpeg', 'All Trophies')">
-        <img src="assets/all_trophies.jpeg" alt="All Trophies">
+        <img src="assets/all_trophies.jpeg" alt="All Trophies" loading="lazy">
+        <div class="gallery-overlay">
+          <div class="gallery-overlay-inner">
+            <span class="gallery-play-icon">⊕</span>
+            <span class="gallery-label">ALL TROPHIES</span>
+          </div>
+        </div>
       </div>
     </div>
-
   </section>
 
-  <!-- LESSONS -->
-  <section>
+  <!-- ═══════════════════════════════════
+       07 — LESSONS
+  ════════════════════════════════════ -->
+  <section id="lessons" data-sec-num="07">
     <div class="sec-header reveal">
       <div class="sec-label">07 / TAKEAWAYS</div>
       <h2 class="sec-title">Long-Term Engineering <span>Lessons</span></h2>
+      <p class="sec-subtitle">What this project permanently changed about my engineering mindset</p>
     </div>
     <div class="lessons-grid">
-      <div class="lesson-card reveal reveal-delay-1">
+      <div class="lesson-card lesson-card--cyan reveal reveal-delay-1" data-tilt>
+        <div class="lesson-num">01</div>
         <div class="lesson-icon">⚡</div>
-        <div class="lesson-text"><strong>Rapid Learning Under Pressure</strong>Learn rapidly when responsibility becomes
-          unavoidable. The best engineering education often comes when there is no fallback — forced ownership
-          accelerates skill acquisition like nothing else.</div>
+        <div class="lesson-text">
+          <strong>Rapid Learning Under Pressure</strong>
+          Learn rapidly when responsibility becomes unavoidable. The best engineering education often comes when there is
+          no fallback — forced ownership accelerates skill acquisition like nothing else.
+        </div>
       </div>
-      <div class="lesson-card reveal reveal-delay-2">
+      <div class="lesson-card lesson-card--orange reveal reveal-delay-2" data-tilt>
+        <div class="lesson-num">02</div>
         <div class="lesson-icon">🔁</div>
-        <div class="lesson-text"><strong>Reverse Engineering > Passive Theory</strong>Reverse engineering teaches more
-          than passive theory because failure forces practical understanding. Dismantling a broken system reveals
-          architecture that no tutorial fully explains.</div>
+        <div class="lesson-text">
+          <strong>Reverse Engineering &gt; Passive Theory</strong>
+          Reverse engineering teaches more than passive theory because failure forces practical understanding.
+          Dismantling a broken system reveals architecture that no tutorial fully explains.
+        </div>
       </div>
-      <div class="lesson-card reveal reveal-delay-3">
+      <div class="lesson-card lesson-card--violet reveal reveal-delay-3" data-tilt>
+        <div class="lesson-num">03</div>
         <div class="lesson-icon">🐛</div>
-        <div class="lesson-text"><strong>Debugging is Built Through Failure</strong>Debugging is built through repeated
-          failure, not one-shot success. Every failed reconnection, every unstable module, and every test loop became
-          the foundation of actual embedded systems intuition.</div>
+        <div class="lesson-text">
+          <strong>Debugging is Built Through Failure</strong>
+          Debugging is built through repeated failure, not one-shot success. Every failed reconnection, every unstable
+          module, and every test loop became the foundation of actual embedded systems intuition.
+        </div>
       </div>
-      <div class="lesson-card reveal reveal-delay-4">
+      <div class="lesson-card lesson-card--gold reveal reveal-delay-4" data-tilt>
+        <div class="lesson-num">04</div>
         <div class="lesson-icon">📋</div>
-        <div class="lesson-text"><strong>Document &amp; Claim Your Work</strong>Technical contribution must be
-          documented for professional ownership and visible credit. If the work is invisible, so is the contributor — no
-          matter how much of the load was carried.</div>
+        <div class="lesson-text">
+          <strong>Document &amp; Claim Your Work</strong>
+          Technical contribution must be documented for professional ownership and visible credit. If the work is
+          invisible, so is the contributor — no matter how much of the load was carried.
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- FOOTER -->
+  <!-- ═══ FOOTER ═══ -->
   <footer>
-    <div class="footer-logo">ANUJ KUMAR</div>
-    <div class="footer-line"></div>
-    <p class="footer-text">This event marked the beginning of Anuj Kumar's independent engineering journey — the
-      transition from curiosity-driven technology interest to accountable prototype restoration, deadline execution,
-      team guidance, and portfolio-worthy technical ownership.</p>
-    <div
-      style="margin-top:30px;font-family:'Share Tech Mono',monospace;font-size:11px;color:rgba(0,229,255,0.3);letter-spacing:2px">
-      RPVV SECTOR-19 DWARKA // SCIENCE EXHIBITION 2023 // PROJECT CODE 09</div>
+    <div class="footer-glow"></div>
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <span class="footer-bracket">[</span>
+        ANUJ KUMAR
+        <span class="footer-bracket">]</span>
+      </div>
+      <div class="footer-line"></div>
+      <p class="footer-text">This event marked the beginning of Anuj Kumar's independent engineering journey — the
+        transition from curiosity-driven technology interest to accountable prototype restoration, deadline execution,
+        team guidance, and portfolio-worthy technical ownership.</p>
+      <div class="footer-badges">
+        <span class="footer-badge">RPVV SECTOR-19 DWARKA</span>
+        <span class="footer-badge footer-badge--active">SCIENCE EXHIBITION 2023</span>
+        <span class="footer-badge">PROJECT CODE 09</span>
+      </div>
+      <div class="footer-divider"></div>
+      <div class="footer-meta">
+        ENGINEERED WITH PRECISION // DOCUMENTED WITH PURPOSE // © 2024 ANUJ KUMAR
+      </div>
+    </div>
   </footer>
 
-  <!-- Unified Lightbox Modal — one instance for entire page -->
-  <div class="lightbox-overlay" id="lightbox" onclick="closeLightbox(event)">
-    <button class="lightbox-close" onclick="closeLightbox()">&#x2715; CLOSE</button>
+  <!-- ═══ LIGHTBOX MODAL ═══ -->
+  <div class="lightbox-overlay" id="lightbox" onclick="closeLightbox(event)" role="dialog" aria-modal="true" aria-label="Media lightbox">
+    <div class="lightbox-backdrop"></div>
+    <button class="lightbox-close" onclick="closeLightbox()" aria-label="Close lightbox">
+      <span>✕</span> CLOSE
+    </button>
     <img src="" alt="" id="lightbox-img">
     <video id="lightbox-video" muted playsinline></video>
   </div>
