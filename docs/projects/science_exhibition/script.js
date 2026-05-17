@@ -1,18 +1,15 @@
 /* ══════════════════════════════════════════════════════════════
-   ANUJ KUMAR | ENGINEERING DOSSIER — Premium Script v3.0
-   Fully repaired & completed to match science_exhibition.html + style.css
-   ──────────────────────────────────────────────────────────────
-   Fixes & Additions vs v2.0:
-   - Loader sequence (bar + status messages → hide on complete)
-   - Cursor trail (#cursorTrail) animation
-   - Cursor size synced to CSS defaults (8px dot / 36px ring)
-   - Side-nav dot scroll-spy (IntersectionObserver per section)
-   - Magnetic button effect ([data-magnetic])
-   - Tilt card effect ([data-tilt])
-   - Counter suffix driven by data-suffix attribute (not hard-coded)
-   - roleBar targets correct id (#roleBar / .role-fill)
-   - Stat items with .stat-static excluded from counter animation
-   - All original v2.0 functionality fully preserved
+   ANUJ KUMAR | ENGINEERING DOSSIER — Premium Script v4.0
+   Upgrades vs v3.0:
+   - Mouse parallax on ambient layers (smooth 6-axis depth)
+   - Particle mouse attraction / repulsion field
+   - Animated timeline progress line on scroll
+   - Role item staggered reveal (opacity cascade)
+   - Ripple effect on [data-ripple] buttons
+   - Typewriter animation for hero eyebrow
+   - Enhanced scroll spy with smooth indicator transitions
+   - Improved counter with easing and suffix logic preserved
+   - All v3.0 functionality fully preserved
    ══════════════════════════════════════════════════════════════ */
 
 /* ══════════════════
@@ -54,7 +51,6 @@
       const delay = 220 + Math.random() * 160;
       setTimeout(tick, delay);
     } else {
-      /* Pause at 100% then fade out */
       setTimeout(() => {
         loader.classList.add('hidden');
         setTimeout(() => loader.remove(), 700);
@@ -73,9 +69,9 @@ const cursor = document.getElementById('cursor');
 const ring   = document.getElementById('cursorRing');
 const trail  = document.getElementById('cursorTrail');
 
-let mx = 0, my = 0;   /* mouse position   */
-let rx = 0, ry = 0;   /* ring lag         */
-let tx = 0, ty = 0;   /* trail lag        */
+let mx = 0, my = 0;
+let rx = 0, ry = 0;
+let tx = 0, ty = 0;
 
 document.addEventListener('mousemove', e => {
   mx = e.clientX;
@@ -85,13 +81,11 @@ document.addEventListener('mousemove', e => {
 });
 
 function animateRing() {
-  /* Ring follows with 10% easing */
   rx += (mx - rx) * 0.10;
   ry += (my - ry) * 0.10;
   ring.style.left = rx + 'px';
   ring.style.top  = ry + 'px';
 
-  /* Trail follows with 5.5% easing — slower than ring */
   if (trail) {
     tx += (mx - tx) * 0.055;
     ty += (my - ty) * 0.055;
@@ -113,20 +107,77 @@ document.querySelectorAll('a, button, .module-card, .lesson-card, .gallery-ph').
     ring.style.borderColor = 'rgba(0,229,255,0.8)';
   });
   el.addEventListener('mouseleave', () => {
-    cursor.style.width  = '8px';   /* match CSS .cursor default */
+    cursor.style.width  = '8px';
     cursor.style.height = '8px';
-    ring.style.width    = '36px';  /* match CSS .cursor-ring default */
+    ring.style.width    = '36px';
     ring.style.height   = '36px';
     ring.style.borderColor = 'rgba(0,229,255,0.50)';
   });
 });
 
-/* Hide cursor elements when pointer leaves the window */
 document.addEventListener('mouseleave', () => {
   [cursor, ring, trail].forEach(el => { if (el) el.style.opacity = '0'; });
 });
 document.addEventListener('mouseenter', () => {
   [cursor, ring, trail].forEach(el => { if (el) el.style.opacity = '1'; });
+});
+
+
+/* ══════════════════
+   MOUSE PARALLAX — AMBIENT LAYERS
+══════════════════ */
+(function initParallax() {
+  const layers = [
+    { el: document.getElementById('ambientTop'),    xFactor: 0.012, yFactor: 0.008 },
+    { el: document.getElementById('ambientMid'),    xFactor: -0.018, yFactor: -0.012 },
+    { el: document.getElementById('ambientAccent'), xFactor: 0.022, yFactor: 0.014 },
+    { el: document.getElementById('ambientBottom'), xFactor: -0.008, yFactor: 0.010 },
+    { el: document.getElementById('ambientViolet'), xFactor: 0.016, yFactor: -0.018 },
+  ].filter(l => l.el);
+
+  // Smoothed parallax positions
+  const smooth = layers.map(() => ({ x: 0, y: 0 }));
+  const target = layers.map(() => ({ x: 0, y: 0 }));
+
+  const cx = window.innerWidth  / 2;
+  const cy = window.innerHeight / 2;
+
+  document.addEventListener('mousemove', e => {
+    const dx = e.clientX - cx;
+    const dy = e.clientY - cy;
+    layers.forEach((l, i) => {
+      target[i].x = dx * l.xFactor;
+      target[i].y = dy * l.yFactor;
+    });
+  });
+
+  function tickParallax() {
+    layers.forEach((l, i) => {
+      smooth[i].x += (target[i].x - smooth[i].x) * 0.06;
+      smooth[i].y += (target[i].y - smooth[i].y) * 0.06;
+      l.el.style.transform = `translate(${smooth[i].x}px, ${smooth[i].y}px)`;
+    });
+    requestAnimationFrame(tickParallax);
+  }
+  tickParallax();
+})();
+
+
+/* ══════════════════
+   RIPPLE BUTTONS
+══════════════════ */
+document.querySelectorAll('[data-ripple]').forEach(btn => {
+  btn.addEventListener('click', function(e) {
+    const rect   = btn.getBoundingClientRect();
+    const size   = Math.max(rect.width, rect.height) * 2;
+    const x      = e.clientX - rect.left - size / 2;
+    const y      = e.clientY - rect.top  - size / 2;
+    const ripple = document.createElement('span');
+    ripple.className = 'ripple';
+    ripple.style.cssText = `width:${size}px;height:${size}px;left:${x}px;top:${y}px`;
+    btn.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 700);
+  });
 });
 
 
@@ -156,10 +207,10 @@ function updateNav() {
   }
 }
 
-/* Single efficient scroll listener */
 window.addEventListener('scroll', () => {
   updateProgress();
   updateNav();
+  updateTimelineProgress();
 }, { passive: true });
 
 updateProgress();
@@ -167,11 +218,19 @@ updateNav();
 
 
 /* ══════════════════
-   CANVAS PARTICLE GRID
+   CANVAS PARTICLE GRID — WITH MOUSE ATTRACTION
 ══════════════════ */
 const canvas = document.getElementById('bg');
 const ctx    = canvas.getContext('2d');
 let W, H, particles = [];
+
+// Mouse world position for particle interaction
+let pMouseX = -9999, pMouseY = -9999;
+
+document.addEventListener('mousemove', e => {
+  pMouseX = e.clientX;
+  pMouseY = e.clientY;
+});
 
 function resize() {
   W = canvas.width  = window.innerWidth;
@@ -195,9 +254,35 @@ class Particle {
     this.vy    = (Math.random() - 0.5) * 0.38;
     this.r     = Math.random() * 1.4 + 0.5;
     this.alpha = Math.random() * 0.38 + 0.08;
+    this.baseVx = this.vx;
+    this.baseVy = this.vy;
   }
 
   update() {
+    // Subtle mouse repulsion field
+    const dx   = this.x - pMouseX;
+    const dy   = this.y - pMouseY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    const influenceR = 120;
+
+    if (dist < influenceR && dist > 0) {
+      const force  = (influenceR - dist) / influenceR;
+      const angle  = Math.atan2(dy, dx);
+      this.vx += Math.cos(angle) * force * 0.28;
+      this.vy += Math.sin(angle) * force * 0.28;
+    }
+
+    // Dampen back toward base velocity
+    this.vx += (this.baseVx - this.vx) * 0.04;
+    this.vy += (this.baseVy - this.vy) * 0.04;
+
+    // Cap speed
+    const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+    if (speed > 1.8) {
+      this.vx = (this.vx / speed) * 1.8;
+      this.vy = (this.vy / speed) * 1.8;
+    }
+
     this.x += this.vx;
     this.y += this.vy;
     if (this.x < 0 || this.x > W || this.y < 0 || this.y > H) this.reset();
@@ -252,14 +337,12 @@ loop();
   const navItems = document.querySelectorAll('.side-nav-item');
   if (!navItems.length) return;
 
-  /* Build a section → nav-item map */
   const navMap = new Map();
   navItems.forEach(item => {
     const sec = document.getElementById(item.dataset.section);
     if (sec) navMap.set(sec, item);
   });
 
-  /* Click to smooth-scroll to section */
   navItems.forEach(item => {
     item.addEventListener('click', () => {
       const target = document.getElementById(item.dataset.section);
@@ -267,7 +350,6 @@ loop();
     });
   });
 
-  /* IntersectionObserver — mark whichever section is in view */
   const spyObs = new IntersectionObserver(entries => {
     entries.forEach(entry => {
       const navItem = navMap.get(entry.target);
@@ -300,6 +382,36 @@ reveals.forEach(r => revealObs.observe(r));
 
 
 /* ══════════════════
+   TIMELINE PROGRESS LINE
+══════════════════ */
+function updateTimelineProgress() {
+  const tl = document.getElementById('timelineEl');
+  const progressLine = document.getElementById('timelineProgress');
+  if (!tl || !progressLine) return;
+
+  const rect      = tl.getBoundingClientRect();
+  const viewH     = window.innerHeight;
+  const totalH    = tl.offsetHeight;
+
+  // How far we've scrolled into the timeline
+  const entered   = viewH - rect.top;
+  const pct       = Math.max(0, Math.min(1, entered / (totalH + viewH * 0.5)));
+  progressLine.style.height = (pct * 100) + '%';
+}
+
+// Observe timeline section to kick off
+const timelineSection = document.getElementById('timeline');
+if (timelineSection) {
+  const tlObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) updateTimelineProgress();
+    });
+  }, { threshold: 0 });
+  tlObs.observe(timelineSection);
+}
+
+
+/* ══════════════════
    COUNTER ANIMATION
 ══════════════════ */
 function animateCounter(el, target, suffix) {
@@ -309,7 +421,6 @@ function animateCounter(el, target, suffix) {
   const step = timestamp => {
     if (!start) start = timestamp;
     const prog = Math.min((timestamp - start) / dur, 1);
-    /* Quart ease-out */
     const ease = 1 - Math.pow(1 - prog, 4);
     el.textContent = Math.floor(ease * target) + suffix;
     if (prog < 1) requestAnimationFrame(step);
@@ -322,10 +433,8 @@ const counterObs = new IntersectionObserver(entries => {
   entries.forEach(e => {
     if (e.isIntersecting) {
       document.querySelectorAll('[data-target]').forEach(el => {
-        /* Skip static display items (e.g. "2nd" position) */
         if (el.classList.contains('stat-static')) return;
 
-        /* Prefer data-suffix attribute; fall back to smart default */
         const suffix = el.dataset.suffix !== undefined
           ? el.dataset.suffix
           : (el.dataset.target === '90' ? '%' : '+');
@@ -347,11 +456,11 @@ if (strip) counterObs.observe(strip);
 const roleObs = new IntersectionObserver(entries => {
   entries.forEach(e => {
     if (e.isIntersecting) {
-      /* Animate the fill bar width */
+      // Animate fill bar
       const roleBar = document.getElementById('roleBar');
       if (roleBar) roleBar.style.width = '88%';
 
-      /* Count-up percentage label */
+      // Count-up percentage label
       const pct = document.getElementById('rolePct');
       if (pct) {
         let v = 0;
@@ -361,6 +470,13 @@ const roleObs = new IntersectionObserver(entries => {
           if (v >= 88) clearInterval(t);
         }, 22);
       }
+
+      // Staggered reveal for role items
+      setTimeout(() => {
+        document.querySelectorAll('.role-item').forEach(item => {
+          item.classList.add('revealed');
+        });
+      }, 400);
 
       roleObs.disconnect();
     }
@@ -396,13 +512,13 @@ if (rv) roleObs.observe(rv);
    TILT CARDS
 ══════════════════ */
 (function initTilt() {
-  const MAX = 8; /* max degrees of tilt */
+  const MAX = 8;
 
   document.querySelectorAll('[data-tilt]').forEach(el => {
     el.addEventListener('mousemove', e => {
       const rect = el.getBoundingClientRect();
-      const x    = (e.clientX - rect.left) / rect.width;   /* 0 → 1 */
-      const y    = (e.clientY - rect.top)  / rect.height;  /* 0 → 1 */
+      const x    = (e.clientX - rect.left) / rect.width;
+      const y    = (e.clientY - rect.top)  / rect.height;
       const rotX = (y - 0.5) * -MAX * 2;
       const rotY = (x - 0.5) *  MAX * 2;
       el.style.transition = 'transform 0.08s linear';
@@ -414,6 +530,29 @@ if (rv) roleObs.observe(rv);
       el.style.transform  = 'perspective(700px) rotateX(0deg) rotateY(0deg) translateY(0)';
     });
   });
+})();
+
+
+/* ══════════════════
+   TYPEWRITER — HERO EYEBROW
+══════════════════ */
+(function initTypewriter() {
+  const el   = document.getElementById('heroEyebrow');
+  if (!el) return;
+
+  const text = el.textContent.trim();
+  el.textContent = '';
+
+  let i = 0;
+  const delay = 1200; // ms before starting
+
+  setTimeout(() => {
+    const interval = setInterval(() => {
+      el.textContent = text.slice(0, i + 1);
+      i++;
+      if (i >= text.length) clearInterval(interval);
+    }, 55);
+  }, delay);
 })();
 
 
@@ -430,7 +569,6 @@ function showVideo() {
   document.getElementById('lightbox-video').style.display = 'block';
 }
 
-/* Open image lightbox */
 function openLightbox(src, alt) {
   const overlay = document.getElementById('lightbox');
   const img     = document.getElementById('lightbox-img');
@@ -441,7 +579,6 @@ function openLightbox(src, alt) {
   document.body.style.overflow = 'hidden';
 }
 
-/* Open video lightbox */
 function openLightboxVideo(cell) {
   const thumbVid = cell.querySelector('video');
   if (!thumbVid) return;
@@ -452,14 +589,12 @@ function openLightboxVideo(cell) {
   const overlay = document.getElementById('lightbox');
   const lbVideo = document.getElementById('lightbox-video');
 
-  /* Pause thumbnail so two copies don't play simultaneously */
   thumbVid.pause();
 
-  lbVideo.muted = true;
+  lbVideo.muted = false;
   lbVideo.src   = src;
   lbVideo.load();
   lbVideo.play().catch(() => {
-    /* Autoplay policy blocked — fall back to muted */
     lbVideo.muted = true;
     lbVideo.play();
   });
@@ -469,28 +604,24 @@ function openLightboxVideo(cell) {
   document.body.style.overflow = 'hidden';
 }
 
-/* Close lightbox */
 function closeLightbox(e) {
   const img   = document.getElementById('lightbox-img');
   const video = document.getElementById('lightbox-video');
 
-  /* Clicking directly on the media does nothing */
   if (e && (e.target === img || e.target === video)) return;
 
   const overlay = document.getElementById('lightbox');
   overlay.classList.remove('active');
   document.body.style.overflow = '';
 
-  /* Stop + clear lightbox video; resume all thumbnail videos */
   video.pause();
   video.src = '';
 
   document.querySelectorAll('.gallery-ph video').forEach(v => {
-    v.play().catch(() => {}); /* silence NotAllowedError in strict browsers */
+    v.play().catch(() => {});
   });
 }
 
-/* Escape key closes lightbox */
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeLightbox();
 });
