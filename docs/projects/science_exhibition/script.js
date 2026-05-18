@@ -591,7 +591,7 @@ function openLightboxVideo(cell) {
 
   thumbVid.pause();
 
-  lbVideo.muted = false;
+  lbVideo.muted = true;
   lbVideo.src   = src;
   lbVideo.load();
   lbVideo.play().catch(() => {
