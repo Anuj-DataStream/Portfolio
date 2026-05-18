@@ -104,7 +104,7 @@ modules_repaired   : 5
 deadline_remaining : ~1 week
 tech_contribution  : 90%
 outcome            : SUCCESS ✓
-result             : 2nd PLACE — Zonal
+result             : 3rd PLACE — Zonal
 project_code       : 09 // CARONYCLEANSER
 ```
 
@@ -131,7 +131,7 @@ project_code       : 09 // CARONYCLEANSER
 
 ```
 [PHASE 01] INSPECTION  →  [PHASE 02] DECISION  →  [PHASE 03] LEARNING  →  [PHASE 04] EXECUTION
- Condition Assessment      Full Rebuild Chosen     ~40 hrs Self-Study      2nd Place at Zonal
+ Condition Assessment      Full Rebuild Chosen     ~40 hrs Self-Study      3rd Place at Zonal
 ```
 
 ![Arduino](https://img.shields.io/badge/Arduino%20Uno-00979D?style=flat-square&logo=arduino&logoColor=white)
@@ -256,7 +256,7 @@ Designed and built a responsive, animated personal portfolio from scratch — fe
 
 | 🏅 Achievement | 📋 Details |
 |---|---|
-| **🥈 2nd Place — Zonal Science Exhibition** | Smart Transportation Prototype (CARONYCLEANSER) · Nov 2023 |
+| **🥉 3rd Place — Zonal Science Exhibition** | Smart Transportation Prototype (CARONYCLEANSER) · Nov 2023 |
 | **⚙️ 5 Modules Restored in 7 Days** | Full Arduino system rebuilt from scratch with zero documentation |
 | **🐧 7+ Years Linux Experience** | Hands-on across multiple distros for development, scripting & sysadmin |
 | **🤖 EMC Program Project** | EcoPal Smart Plant System — built as part of the school EMC curriculum |
