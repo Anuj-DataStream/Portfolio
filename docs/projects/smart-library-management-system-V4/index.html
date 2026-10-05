@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Smart Library Management System — an engineering case study documenting the problem, system architecture, development journey, prototype validation, and future scope of an RFID and ESP32 based library automation system.">
+  <meta name="author" content="Anuj Kumar">
+  <title>Smart Library Management System | Engineering Case Study</title>
+  <meta name="color-scheme" content="light dark">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400..700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <!-- =========================================================
+       SITE HEADER
+       ========================================================= -->
+  <header class="site-header" id="top">
+    <div class="container header-inner">
+      <a class="brand" href="#top" aria-label="Smart Library Management System home">
+        <span class="brand-mark">SL</span>
+        <span>
+          <strong>Smart Library</strong>
+          <small>Engineering Case Study</small>
+        </span>
+      </a>
+
+      <nav class="primary-nav" aria-label="Primary navigation">
+        <a href="#overview">Overview</a>
+        <a href="#problem">Problem</a>
+        <a href="#requirements">Design decisions</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#workflow">Workflow</a>
+        <a href="#hardware">Hardware</a>
+        <a href="#software">Software</a>
+        <a href="#development">Development</a>
+        <a href="#challenges">Challenges</a>
+        <a href="#prototype">Prototype</a>
+        <a href="#testing">Testing</a>
+        <a href="#analytics">Analytics</a>
+        <a href="#roles">Access model</a>
+        <a href="#reliability">Reliability</a>
+        <a href="#data-management">Data lifecycle</a>
+        <a href="#evidence">Evidence</a>
+        <a href="#future">Future scope</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- =========================================================
+         HERO
+         ========================================================= -->
+    <section class="hero" aria-labelledby="project-title">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">System project, engineering case study, version 1</p>
+
+          <h1 id="project-title">
+            Smart Library<br>
+            <span>Management System</span>
+          </h1>
+
+          <p class="hero-lead">
+            From a manually written library register to an integrated
+            RFID + ESP32 + Google Sheets system designed to digitize
+            entry, exit, attendance, occupancy, and library insights.
+          </p>
+
+          <div class="hero-actions">
+            <a class="button primary" href="#problem">Explore the problem</a>
+            <a class="button secondary" href="#architecture">See the system</a>
+          </div>
+        </div>
+
+        <aside class="sim" aria-labelledby="sim-title">
+          <h2 id="sim-title">Try the entry / exit logic</h2>
+          <p class="sim-help">Tap a demo card on the reader. The same card twice gives an entry, then an exit. The
+            library starts at 37 of 50, the example used in the architecture section.</p>
+          <div class="sim-cards" role="group" aria-label="Demo RFID cards">
+            <button type="button" data-uid="04 A3 5F 1C">Aarav</button>
+            <button type="button" data-uid="04 7B 22 E9">Meera</button>
+            <button type="button" data-uid="04 C1 90 3D">Rohan</button>
+            <button type="button" data-uid="FF 00 00 00">Unknown card</button>
+          </div>
+          <div class="lcd" id="lcd" role="status" aria-live="polite" data-state="idle">
+            <span id="lcd-1"></span>
+            <span id="lcd-2"></span>
+          </div>
+          <div class="occupancy">
+            <div class="meter" id="meter" role="meter" aria-label="Library occupancy" aria-valuemin="0"
+              aria-valuemax="50"><i></i></div>
+            <p><span id="occ-text"></span><span id="occ-pct"></span></p>
+          </div>
+          <div class="ledger-wrap">
+            <table class="ledger">
+              <caption>Attendance rows (demo)</caption>
+              <thead>
+                <tr>
+                  <th>Student ID</th>
+                  <th>Name</th>
+                  <th>Entry</th>
+                  <th>Exit</th>
+                </tr>
+              </thead>
+              <tbody id="ledger-body"></tbody>
+            </table>
+          </div>
+          <button type="button" class="ghost" id="sim-reset">Reset demo</button>
+        </aside>
+
+        <dl class="hero-facts" aria-label="Project facts">
+          <div>
+            <dt>Project type</dt>
+            <dd>Hardware + Software + Data</dd>
+          </div>
+          <div>
+            <dt>Identification</dt>
+            <dd>RFID</dd>
+          </div>
+          <div>
+            <dt>Controller</dt>
+            <dd>ESP32</dd>
+          </div>
+          <div>
+            <dt>Cloud layer</dt>
+            <dd>Google Apps Script + Sheets</dd>
+          </div>
+          <div>
+            <dt>Prototype validation</dt>
+            <dd>VS Code + PlatformIO + Wokwi</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         PROJECT THESIS / EXECUTIVE SUMMARY
+         ========================================================= -->
+    <section class="section" id="overview" aria-labelledby="overview-title">
+      <div class="container">
+        <div class="section-heading">
+          <p class="section-number">01</p>
+          <div>
+            <p class="eyebrow">Project thesis</p>
+            <h2 id="overview-title">A real problem became a complete system.</h2>
+          </div>
+        </div>
+
+        <div class="intro-grid">
+          <article class="feature-card large">
+            <p class="card-label">The idea</p>
+            <h3>Do not automate one step. Improve the whole workflow.</h3>
+            <p>
+              The project began with a simple observation inside a college library:
+              students were still recording their visits manually in a physical register.
+              The goal was therefore not simply to replace handwriting with an RFID reader.
+              The goal was to rethink the complete workflow around identification,
+              entry, exit, record storage, occupancy, analytics, and access to information.
+            </p>
+            <p>
+              The resulting concept connects a physical identification point to a
+              digital data system. A student's RFID card is read by an ESP32, the
+              visit is processed as an entry or exit, the record is sent to Google
+              Sheets through Google Apps Script, and the resulting data can drive
+              analytics and a library dashboard.
+            </p>
+          </article>
+
+          <aside class="quote-card">
+            <p class="card-label">Engineering principle</p>
+            <blockquote>
+              “If I notice a problem and decide it is worth solving, I will learn
+              whatever is necessary to solve it—even if I start from zero.”
+            </blockquote>
+            <p class="quote-caption">The mindset behind the project.</p>
+          </aside>
+        </div>
+
+        <div class="status-strip" aria-label="Current project status">
+          <div>
+            <span class="status-dot working"></span>
+            <strong>Core system working</strong>
+            <span>RFID → ESP32 → Google Sheets → Analytics → Dashboard</span>
+          </div>
+          <div>
+            <span class="status-dot next"></span>
+            <strong>Next engineering stage</strong>
+            <span>Physical enclosure + offline storage + final hardware prototype</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         PROBLEM OBSERVATION
+         ========================================================= -->
+    <section class="section section-alt" id="problem" aria-labelledby="problem-title">
+      <div class="container">
+        <div class="section-heading">
+          <p class="section-number">02</p>
+          <div>
+            <p class="eyebrow">Observation → problem definition</p>
+            <h2 id="problem-title">The problem was visible before the technology was chosen.</h2>
+          </div>
+        </div>
+
+        <div class="story-grid">
+          <article>
+            <p class="card-label">What was observed</p>
+            <h3>Every library visit starts with a manual transaction.</h3>
+            <p>
+              A student enters the library, writes their details in a register,
+              and later records the exit. Over many visits, this produces a large
+              collection of handwritten records that are difficult to search,
+              process, and turn into useful information.
+            </p>
+            <p>
+              From the student's perspective, the process can create queues and
+              unnecessary friction. There is also no simple way for a student to
+              know the current occupancy of the library before making the trip.
+            </p>
+          </article>
+
+          <article class="problem-list">
+            <p class="card-label">Pain points</p>
+            <ol>
+              <li>
+                <strong>Manual entry</strong>
+                <span>Students repeatedly write visit details in a physical register.</span>
+              </li>
+              <li>
+                <strong>Time and queues</strong>
+                <span>Writing and registration adds friction at the entrance.</span>
+              </li>
+              <li>
+                <strong>Difficult records</strong>
+                <span>Old handwritten records are harder to search and process.</span>
+              </li>
+              <li>
+                <strong>Limited visibility</strong>
+                <span>Students cannot easily check current library occupancy beforehand.</span>
+              </li>
+              <li>
+                <strong>Unused data potential</strong>
+                <span>Raw visit records can be valuable for analytics but are difficult to analyze manually.</span>
+              </li>
+            </ol>
+          </article>
+        </div>
+
+        <div class="problem-definition">
+          <p class="card-label">Problem definition</p>
+          <h3>
+            How can a library replace repetitive manual entry with a faster,
+            reliable, searchable and analyzable digital workflow while keeping
+            the student experience simple?
+          </h3>
+        </div>
+
+        <div class="requirements-grid">
+          <article>
+            <h3>Student requirements</h3>
+            <ul>
+              <li>Fast identification without handwriting.</li>
+              <li>Clear entry and exit confirmation.</li>
+              <li>Minimal waiting at the entrance.</li>
+              <li>Ability to view current occupancy information.</li>
+            </ul>
+          </article>
+          <article>
+            <h3>Staff requirements</h3>
+            <ul>
+              <li>Reliable identification and attendance records.</li>
+              <li>Simple student/RFID registration management.</li>
+              <li>Current students-inside information.</li>
+              <li>Access to daily operational records.</li>
+            </ul>
+          </article>
+          <article>
+            <h3>Administration requirements</h3>
+            <ul>
+              <li>Long-term records.</li>
+              <li>Analytics and reporting.</li>
+              <li>Configurable library capacity.</li>
+              <li>Historical data preservation.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         DESIGN DECISIONS
+         ========================================================= -->
+    <section class="section" id="requirements" aria-labelledby="requirements-title">
+      <div class="container">
+        <div class="section-heading">
+          <p class="section-number">03</p>
+          <div>
+            <p class="eyebrow">System design decisions</p>
+            <h2 id="requirements-title">Every major component exists for a reason.</h2>
+          </div>
+        </div>
+
+        <div class="decision-table-wrap">
+          <table class="decision-table">
+            <caption>Key design decisions made during the project</caption>
+            <thead>
+              <tr>
+                <th>Decision</th>
+                <th>Chosen approach</th>
+                <th>Why it fits the problem</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Identification</td>
+                <td>RFID</td>
+                <td>Fast, contactless, reusable, low-effort and suitable for repeated visits.</td>
+              </tr>
+              <tr>
+                <td>Controller</td>
+                <td>ESP32</td>
+                <td>Combines embedded control with Wi-Fi connectivity in one compact platform.</td>
+              </tr>
+              <tr>
+                <td>Development environment</td>
+                <td>VS Code + PlatformIO + Wokwi</td>
+                <td>Enabled structured embedded development and digital hardware testing before physical deployment.
+                </td>
+              </tr>
+              <tr>
+                <td>Data layer</td>
+                <td>Google Apps Script + Google Sheets</td>
+                <td>Provides an accessible cloud-backed record system without building a large backend from scratch.
+                </td>
+              </tr>
+              <tr>
+                <td>Attendance model</td>
+                <td>One complete row per visit</td>
+                <td>Preserves the familiar register concept while making it digitally searchable and analyzable.</td>
+              </tr>
+              <tr>
+                <td>Entry/exit logic</td>
+                <td>First valid scan = entry; second = exit</td>
+                <td>Allows repeated library visits without overwriting previous visits.</td>
+              </tr>
+              <tr>
+                <td>Historical students</td>
+                <td>Deactivate, do not delete</td>
+                <td>Preserves historical attendance linked to the student's Student ID.</td>
+              </tr>
+              <tr>
+                <td>Rejected RFID</td>
+                <td>Access denied without normal attendance record</td>
+                <td>Unknown cards cannot enter the attendance workflow.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         SYSTEM ARCHITECTURE
+         ========================================================= -->
+    <section class="section section-alt" id="architecture" aria-labelledby="architecture-title">
+      <div class="container">
+        <div class="section-heading">
+          <p class="section-number">04</p>
+          <div>
+            <p class="eyebrow">System architecture</p>
+            <h2 id="architecture-title">One system. Four connected engineering layers.</h2>
+            <p>
+              These are not four separate mini-projects. They are four connected
+              layers of one library automation system.
+            </p>
+          </div>
+        </div>
+
+        <div class="architecture-flow" aria-label="System data flow">
+          <div class="flow-node">
+            <span>01</span>
+            <strong>RFID card</strong>
+            <small>Student identity</small>
+          </div>
+          <span class="flow-arrow" aria-hidden="true">→</span>
+          <div class="flow-node">
+            <span>02</span>
+            <strong>RFID reader + ESP32</strong>
+            <small>Decision + device feedback</small>
+          </div>
+          <span class="flow-arrow" aria-hidden="true">→</span>
+          <div class="flow-node">
+            <span>03</span>
+            <strong>Google Apps Script</strong>
+            <small>Data processing bridge</small>
+          </div>
+          <span class="flow-arrow" aria-hidden="true">→</span>
+          <div class="flow-node">
+            <span>04</span>
+            <strong>Google Sheets</strong>
+            <small>Digital records</small>
+          </div>
+          <span class="flow-arrow" aria-hidden="true">→</span>
+          <div class="flow-node">
+            <span>05</span>
+            <strong>Analytics + Dashboard</strong>
+            <small>Information layer</small>
+          </div>
+        </div>
+
+        <div class="layer-grid">
+          <article class="layer-card">
+            <span class="layer-number">01</span>
+            <p class="card-label">Identification &amp; access</p>
+            <h3>Know who is asking for access.</h3>
+            <p>
+              The RFID card provides the student's identity. The ESP32 reads the
+              card and checks whether the RFID UID belongs to a registered student.
+            </p>
+            <ul>
+              <li>Registered card → continue</li>
+              <li>Unknown card → Access Denied</li>
+              <li>Entry → one buzzer beep</li>
+              <li>Exit → two buzzer beeps</li>
+              <li>LCD provides immediate feedback</li>
+            </ul>
+          </article>
+
+          <article class="layer-card">
+            <span class="layer-number">02</span>
+            <p class="card-label">Attendance &amp; data management</p>
+            <h3>Turn a scan into a useful record.</h3>
+            <p>
+              Each completed library visit is stored as one digital attendance
+              row containing the student's identity and entry/exit information.
+            </p>
+            <div class="data-schema" aria-label="Attendance schema">
+              <span>DATE</span>
+              <span>RFID UID</span>
+              <span>STUDENT ID</span>
+              <span>NAME</span>
+              <span>BRANCH</span>
+              <span>ENTRY</span>
+              <span>EXIT</span>
+            </div>
+          </article>
+
+          <article class="layer-card">
+            <span class="layer-number">03</span>
+            <p class="card-label">Analytics &amp; monitoring</p>
+            <h3>Convert raw records into information.</h3>
+            <p>
+              The raw attendance sheet is treated as the source data. Analytics
+              derives useful metrics from it rather than forcing every metric
+              into the raw attendance record.
+            </p>
+            <ol>
+              <li>Total Visits</li>
+              <li>Unique Students</li>
+              <li>Currently Inside</li>
+              <li>Average Stay</li>
+              <li>Daily Visits</li>
+              <li>Visits by Hour</li>
+              <li>Visits by Student</li>
+              <li>Visits by Branch</li>
+            </ol>
+          </article>
+
+          <article class="layer-card">
+            <span class="layer-number">04</span>
+            <p class="card-label">Availability &amp; user interface</p>
+            <h3>Make the system useful before a student enters.</h3>
+            <p>
+              A student-facing view can show the configured capacity and current
+              occupancy without exposing personal historical attendance.
+            </p>
+            <div class="availability-example">
+              <strong>SPACE AVAILABLE</strong>
+              <span>Students inside: 37</span>
+              <span>Capacity: 50</span>
+              <span>Available: 13</span>
+              <span>Occupancy: 74%</span>
+            </div>
+            <small>
+              Availability is based on configured capacity and may differ from
+              actual physical seating availability.
+            </small>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         WORKFLOW
+         ========================================================= -->
+    <section class="section" id="workflow" aria-labelledby="workflow-title">
+      <div class="container">
+        <div class="section-heading">
+          <p class="section-number">05</p>
+          <div>
+            <p class="eyebrow">Core workflow</p>
+            <h2 id="workflow-title">From a card tap to a complete library record.</h2>
+          </div>
+        </div>
+
+        <div class="workflow">
+          <article class="workflow-step">
+            <span>01</span>
+            <h3>Student scans RFID</h3>
+            <p>The RFID reader captures the card UID.</p>
+          </article>
+          <article class="workflow-step">
+            <span>02</span>
+            <h3>ESP32 identifies the student</h3>
+            <p>The UID is matched against registered student information.</p>
+          </article>
+          <article class="workflow-step">
+            <span>03</span>
+            <h3>System determines the action</h3>
+            <p>The next valid state is treated as Entry or Exit.</p>
+          </article>
+          <article class="workflow-step">
+            <span>04</span>
+            <h3>Device confirms the action</h3>
+            <p>LCD displays the student's name and confirmation; buzzer provides an audio signal.</p>
+          </article>
+          <article class="workflow-step">
+            <span>05</span>
+            <h3>Data reaches the cloud layer</h3>
+            <p>ESP32 communicates with Google Apps Script and Google Sheets.</p>
+          </article>
+          <article class="workflow-step">
+            <span>06</span>
+            <h3>Records become insights</h3>
+            <p>Analytics and dashboard views use the updated attendance data.</p>
+          </article>
+        </div>
+
+        <div class="logic-box">
+          <div>
+            <p class="card-label">Entry / exit state logic</p>
+            <h3>First valid scan → Entry<br>Second valid scan → Exit<br>Next visit → Entry again</h3>
+          </div>
+          <p>
+            This allows multiple visits in a day. Each completed visit is preserved
+            as its own row instead of overwriting an earlier visit.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         HARDWARE
+         ========================================================= -->
+    <section class="section section-alt" id="hardware" aria-labelledby="hardware-title">
+      <div class="container">
+        <div class="section-heading">
+          <p class="section-number">06</p>
+          <div>
+            <p class="eyebrow">Hardware system</p>
+            <h2 id="hardware-title">The physical layer is intentionally simple.</h2>
+          </div>
+        </div>
+
+        <p class="section-lead">
+          The hardware does not try to do everything. Its job is to identify the
+          student, make the local decision, provide immediate feedback, and move
+          the event into the digital system.
+        </p>
+
+        <div class="hardware-grid">
+          <article>
+            <h3>ESP32</h3>
+            <p>Central embedded controller and Wi-Fi communication device.</p>
+          </article>
+          <article>
+            <h3>RFID reader</h3>
+            <p>Reads the unique identifier stored on the student's RFID card.</p>
+          </article>
+          <article>
+            <h3>RFID card</h3>
+            <p>Reusable contactless student identification token.</p>
+          </article>
+          <article>
+            <h3>LCD</h3>
+            <p>Provides immediate human-readable entry, exit, and error feedback.</p>
+          </article>
+          <article>
+            <h3>Buzzer</h3>
+            <p>Provides fast audio confirmation for entry, exit, or access denial.</p>
+          </article>
+          <article>
+            <h3>Prototype wiring</h3>
+            <p>Used to validate the integrated hardware concept before enclosure design.</p>
+          </article>
+        </div>
+
+        <div class="evidence-placeholder-grid">
+          <figure>
+            <div class="media-placeholder"><img src="assets/images/testimage2.png" alt="tes image"></div>
+            <figcaption>Final hardware setup — replace this placeholder with the prototype photograph.</figcaption>
+          </figure>
+          <figure>
+            <div class="media-placeholder"><img src="assets/images/testimage2.png" alt="tes image"></div>
+            <figcaption>ESP32 + RFID + LCD + buzzer wiring diagram.</figcaption>
+          </figure>
+          <figure>
+            <div class="media-placeholder"><img src="assets/gifs/Recording 2026-10-05 095628.gif" alt="tes image"></div>
+            <figcaption>Photograph or short video showing a card being scanned.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         SOFTWARE / DEVELOPMENT STACK
+         ========================================================= -->
+    <section class="section" id="software" aria-labelledby="software-title">
+      <div class="container">
+        <div class="section-heading">
+          <p class="section-number">07</p>
+          <div>
+            <p class="eyebrow">Software &amp; tools</p>
+            <h2 id="software-title">The stack was learned because the problem required it.</h2>
+          </div>
+        </div>
+
+        <div class="stack-grid">
+          <article>
+            <span class="tool-tag">Embedded</span>
+            <h3>ESP32</h3>
+            <p>Runs the RFID, state logic, LCD, buzzer, and network communication.</p>
+          </article>
+          <article>
+            <span class="tool-tag">Development</span>
+            <h3>VS Code + PlatformIO</h3>
+            <p>Used for structured firmware development, builds, libraries, and debugging.</p>
+          </article>
+          <article>
+            <span class="tool-tag">Simulation</span>
+            <h3>Wokwi</h3>
+            <p>Used to create and test the digital hardware environment before physical deployment.</p>
+          </article>
+          <article>
+            <span class="tool-tag">Cloud bridge</span>
+            <h3>Google Apps Script</h3>
+            <p>Acts as the bridge between the ESP32 requests and the Google Sheets data layer.</p>
+          </article>
+          <article>
+            <span class="tool-tag">Data</span>
+            <h3>Google Sheets</h3>
+            <p>Stores attendance records and supports the analytics/dashboard layer.</p>
+          </article>
+          <article>
+            <span class="tool-tag">Research</span>
+            <h3>Documentation + GitHub + Web Research</h3>
+            <p>Used to understand unfamiliar technologies, compare approaches, debug errors, and iterate.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         DEVELOPMENT JOURNEY
+         ========================================================= -->
+    <section class="section section-alt" id="development" aria-labelledby="development-title">
+      <div class="container">
+        <div class="section-heading">
+          <p class="section-number">08</p>
+          <div>
+            <p class="eyebrow">Development journey</p>
+            <h2 id="development-title">The build process is part of the project.</h2>
+            <p>
+              This section intentionally documents how the system was developed,
+              not only what the final system looks like.
+            </p>
+          </div>
+        </div>
+
+        <ol class="timeline">
+          <li>
+            <span class="timeline-marker">01</span>
+            <div>
+              <p class="timeline-label">Observe</p>
+              <h3>Notice the manual library workflow.</h3>
+              <p>
+                The project started with a real-world observation rather than a
+                technology-first idea: students and staff were still dependent
+                on a physical entry/exit register.
+              </p>
+            </div>
+          </li>
+          <li>
+            <span class="timeline-marker">02</span>
+            <div>
+              <p class="timeline-label">Define</p>
+              <h3>Expand the problem beyond attendance.</h3>
+              <p>
+                The target became a complete workflow: identification, entry,
+                exit, searchable records, occupancy, analytics, and a better
+                student experience.
+              </p>
+            </div>
+          </li>
+          <li>
+            <span class="timeline-marker">03</span>
+            <div>
+              <p class="timeline-label">Research</p>
+              <h3>Learn the technologies required by the solution.</h3>
+              <p>
+                RFID, ESP32, PlatformIO, Wokwi, Google Apps Script, and the
+                ESP32-to-Google-Sheets workflow were new areas of direct work.
+                Existing Arduino and IoT experience reduced the learning curve.
+              </p>
+            </div>
+          </li>
+          <li>
+            <span class="timeline-marker">04</span>
+            <div>
+              <p class="timeline-label">Experiment</p>
+              <h3>Build and break small pieces.</h3>
+              <p>
+                Development involved brainstorming, online research, documentation,
+                GitHub examples, ChatGPT, simulation, trial-and-error, and
+                debugging error messages.
+              </p>
+            </div>
+          </li>
+          <li>
+            <span class="timeline-marker">05</span>
+            <div>
+              <p class="timeline-label">Integrate</p>
+              <h3>Connect the previously separate pieces.</h3>
+              <p>
+                The major breakthrough came from learning to use Wokwi with
+                VS Code and PlatformIO and then successfully connecting the
+                ESP32 workflow to Google Sheets.
+              </p>
+            </div>
+          </li>
+          <li>
+            <span class="timeline-marker">06</span>
+            <div>
+              <p class="timeline-label">Debug</p>
+              <h3>Work through real system-level problems.</h3>
+              <p>
+                RFID identification, ESP32/Wi-Fi communication, Apps Script,
+                synchronization, entry/exit state logic, dashboard updating,
+                and hardware constraints all required iteration.
+              </p>
+            </div>
+          </li>
+          <li>
+            <span class="timeline-marker">07</span>
+            <div>
+              <p class="timeline-label">Validate</p>
+              <h3>Test the complete digital prototype.</h3>
+              <p>
+                Multiple cards, repeated visits, multiple students, unknown cards,
+                duplicate/wrong scans, different branches, sheet accuracy,
+                dashboard updates, and ESP32 reconnection were tested in Wokwi.
+              </p>
+            </div>
+          </li>
+          <li>
+            <span class="timeline-marker">08</span>
+            <div>
+              <p class="timeline-label">Build next</p>
+              <h3>Move from validated simulation to physical implementation.</h3>
+              <p>
+                The next stage is the physical prototype, enclosure, and offline
+                storage behavior, followed by real-world testing and refinement.
+              </p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         CHALLENGES / ITERATION
+         ========================================================= -->
+    <section class="section" id="challenges" aria-labelledby="challenges-title">
+      <div class="container">
+        <div class="section-heading">
+          <p class="section-number">09</p>
+          <div>
+            <p class="eyebrow">Failure → debugging → iteration</p>
+            <h2 id="challenges-title">Problems were not side notes. They were part of the engineering.</h2>
+          </div>
+        </div>
+
+        <div class="challenge-grid">
+          <article>
+            <span>01</span>
+            <h3>RFID identification</h3>
+            <p>Understanding UID handling, registered-card matching, and unknown-card behavior.</p>
+            <strong>Approach: research → experiment → validate.</strong>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>ESP32 / Wi-Fi</h3>
+            <p>Working through embedded networking and communication behavior.</p>
+            <strong>Approach: test the device layer before blaming the cloud layer.</strong>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>Apps Script / API</h3>
+            <p>Connecting an embedded device to a cloud-backed spreadsheet workflow.</p>
+            <strong>Approach: understand requests, responses, deployment, and errors.</strong>
+          </article>
+          <article>
+            <span>04</span>
+            <h3>Data synchronization</h3>
+            <p>Making sure the event produced by a scan becomes the expected digital record.</p>
+            <strong>Approach: trace the complete path from scan to sheet.</strong>
+          </article>
+          <article>
+            <span>05</span>
+            <h3>Entry / exit logic</h3>
+            <p>Handling repeated visits without overwriting earlier attendance.</p>
+            <strong>Approach: model the visit as a state transition.</strong>
+          </article>
+          <article>
+            <span>06</span>
+            <h3>Dashboard updating</h3>
+            <p>Ensuring analytics reflect new attendance instead of remaining manually refreshed.</p>
+            <strong>Approach: connect raw data changes to derived information.</strong>
+          </article>
+          <article>
+            <span>07</span>
+            <h3>Hardware limitations</h3>
+            <p>Keeping the architecture practical for a low-cost embedded prototype.</p>
+            <strong>Approach: solve the required problem without unnecessary hardware complexity.</strong>
+          </article>
+        </div>
+
+        <div class="learning-statement">
+          <p class="card-label">What the process demonstrated</p>
+          <h3>
+            The project did not begin with complete knowledge of the technology.
+            The technology was learned along the way because the problem demanded it.
+          </h3>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         PROTOTYPE / CURRENT STATUS
+         ========================================================= -->
+    <section class="section section-alt" id="prototype" aria-labelledby="prototype-title">
+      <div class="container">
+        <div class="section-heading">
+          <p class="section-number">10</p>
+          <div>
+            <p class="eyebrow">Current prototype</p>
+            <h2 id="prototype-title">What is working right now?</h2>
+          </div>
+        </div>
+
+        <div class="status-grid">
+          <article class="status-card done">
+            <span>✓</span>
+            <h3>RFID card reading</h3>
+            <p>Working in the digital prototype.</p>
+          </article>
+          <article class="status-card done">
+            <span>✓</span>
+            <h3>ESP32 + RFID communication</h3>
+            <p>Working in the digital prototype.</p>
+          </article>
+          <article class="status-card done">
+            <span>✓</span>
+            <h3>LCD feedback</h3>
+            <p>Working in the digital prototype.</p>
+          </article>
+          <article class="status-card done">
+            <span>✓</span>
+            <h3>Entry / exit logic</h3>
+            <p>Working and tested.</p>
+          </article>
+          <article class="status-card done">
+            <span>✓</span>
+            <h3>Google Sheets connection</h3>
+            <p>Working through Google Apps Script.</p>
+          </article>
+          <article class="status-card done">
+            <span>✓</span>
+            <h3>Entry + exit timestamps</h3>
+            <p>Working as part of the attendance record.</p>
+          </article>
+          <article class="status-card done">
+            <span>✓</span>
+            <h3>Analytics</h3>
+            <p>Working from attendance data.</p>
+          </article>
+          <article class="status-card done">
+            <span>✓</span>
+            <h3>Dashboard</h3>
+            <p>Working as the information layer.</p>
+          </article>
+          <article class="status-card next">
+            <span>→</span>
+            <h3>Offline data storage</h3>
+            <p>Planned next engineering stage.</p>
+          </article>
+          <article class="status-card next">
+            <span>→</span>
+            <h3>Physical enclosure</h3>
+            <p>Planned.</p>
+          </article>
+          <article class="status-card next">
+            <span>→</span>
+            <h3>Final hardware prototype</h3>
+            <p>Planned after physical validation.</p>
+          </article>
+        </div>
+
+        <div class="prototype-note">
+          <strong>Important:</strong>
+          The current validation is a digital prototype created with
+          <strong>VS Code + PlatformIO + Wokwi</strong>. Physical hardware
+          validation is the next stage and will be documented separately.
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         TESTING
+         ========================================================= -->
+    <section class="section" id="testing" aria-labelledby="testing-title">
+      <div class="container">
+        <div class="section-heading">
+          <p class="section-number">11</p>
+          <div>
+            <p class="eyebrow">Digital prototype validation</p>
+            <h2 id="testing-title">Test the system, not just the components.</h2>
+          </div>
+        </div>
+
+        <p class="section-lead">
+          The system was tested as an integrated workflow inside the VS Code +
+          PlatformIO + Wokwi environment.
+        </p>
+
+        <div class="test-table-wrap">
+          <table class="test-table">
+            <caption>Functional test scenarios</caption>
+            <thead>
+              <tr>
+                <th>Test</th>
+                <th>What was checked</th>
+                <th>Result</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Multiple RFID cards</td>
+                <td>Different registered identities are handled correctly.</td>
+                <td class="pass">PASS</td>
+              </tr>
+              <tr>
+                <td>Entry → Exit → Entry</td>
+                <td>Repeated visits do not break the attendance state.</td>
+                <td class="pass">PASS</td>
+              </tr>
+              <tr>
+                <td>Multiple students</td>
+                <td>Different users can be processed through the system.</td>
+                <td class="pass">PASS</td>
+              </tr>
+              <tr>
+                <td>Unknown card</td>
+                <td>Unregistered RFID is rejected.</td>
+                <td class="pass">PASS</td>
+              </tr>
+              <tr>
+                <td>Wrong / duplicate scans</td>
+                <td>Unexpected repeated scanning behavior is tested.</td>
+                <td class="pass">PASS</td>
+              </tr>
+              <tr>
+                <td>Different branches</td>
+                <td>Branch information remains associated with the correct student.</td>
+                <td class="pass">PASS</td>
+              </tr>
+              <tr>
+                <td>Google Sheets accuracy</td>
+                <td>Attendance data reaches the expected sheet structure.</td>
+                <td class="pass">PASS</td>
+              </tr>
+              <tr>
+                <td>Analytics / dashboard</td>
+                <td>New records affect derived information.</td>
+                <td class="pass">PASS</td>
+              </tr>
+              <tr>
+                <td>ESP32 restart / Wi-Fi reconnect</td>
+                <td>Reconnection behavior is tested in the digital environment.</td>
+                <td class="pass">PASS</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="testing-note">
+          <p class="card-label">Next validation boundary</p>
+          <p>
+            Physical testing will add variables that simulation cannot completely
+            reproduce: real RFID positioning, wiring quality, power behavior,
+            physical scanning speed, Wi-Fi conditions, enclosure constraints,
+            and actual student interaction.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         DATA / ANALYTICS
+         ========================================================= -->
+    <section class="section section-alt" id="analytics" aria-labelledby="analytics-title">
+      <div class="container">
+        <div class="section-heading">
+          <p class="section-number">12</p>
+          <div>
+            <p class="eyebrow">Data &amp; analytics</p>
+            <h2 id="analytics-title">The register becomes a source of insight.</h2>
+          </div>
+        </div>
+
+        <div class="analytics-grid">
+          <article><strong>01</strong>
+            <h3>Total Visits</h3>
+            <p>How many library visits have been recorded.</p>
+          </article>
+          <article><strong>02</strong>
+            <h3>Unique Students</h3>
+            <p>How many distinct students have used the library.</p>
+          </article>
+          <article><strong>03</strong>
+            <h3>Currently Inside</h3>
+            <p>Students whose latest visit state is currently inside.</p>
+          </article>
+          <article><strong>04</strong>
+            <h3>Average Stay</h3>
+            <p>Average duration derived from completed entry/exit records.</p>
+          </article>
+          <article><strong>05</strong>
+            <h3>Daily Visits</h3>
+            <p>Visit activity grouped by date.</p>
+          </article>
+          <article><strong>06</strong>
+            <h3>Visits by Hour</h3>
+            <p>Helps reveal periods of higher library usage.</p>
+          </article>
+          <article><strong>07</strong>
+            <h3>Visits by Student</h3>
+            <p>Shows individual visit frequency for authorized users.</p>
+          </article>
+          <article><strong>08</strong>
+            <h3>Visits by Branch</h3>
+            <p>Shows usage patterns across academic branches.</p>
+          </article>
+        </div>
+
+        <div class="data-principle">
+          <h3>Raw data first. Derived metrics second.</h3>
+          <p>
+            Duration is intentionally not stored as a raw attendance column.
+            It is calculated when analytics/dashboard data is refreshed so that
+            the attendance sheet remains a clean record of the original visit.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         ROLES / ACCESS
+         ========================================================= -->
+    <section class="section" id="roles" aria-labelledby="roles-title">
+      <div class="container">
+        <div class="section-heading">
+          <p class="section-number">13</p>
+          <div>
+            <p class="eyebrow">Access model</p>
+            <h2 id="roles-title">Different users need different information.</h2>
+          </div>
+        </div>
+
+        <div class="roles-grid">
+          <article>
+            <h3>Students</h3>
+            <p class="role-access">Current occupancy only</p>
+            <ul>
+              <li>Library status</li>
+              <li>Students inside</li>
+              <li>Configured capacity</li>
+              <li>Available seats</li>
+              <li>Occupancy percentage</li>
+            </ul>
+          </article>
+          <article>
+            <h3>Staff</h3>
+            <p class="role-access">Operational records</p>
+            <ul>
+              <li>Daily attendance</li>
+              <li>Entry/exit records</li>
+              <li>Current students inside</li>
+              <li>RFID/student management</li>
+              <li>Capacity configuration</li>
+            </ul>
+          </article>
+          <article>
+            <h3>Administration</h3>
+            <p class="role-access">Full information layer</p>
+            <ul>
+              <li>Detailed records</li>
+              <li>Analytics</li>
+              <li>Long-term reports</li>
+              <li>Capacity configuration</li>
+              <li>System-level management</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         RELIABILITY / EDGE CASES
+         ========================================================= -->
+    <section class="section section-alt" id="reliability" aria-labelledby="reliability-title">
+      <div class="container">
+        <div class="section-heading">
+          <p class="section-number">14</p>
+          <div>
+            <p class="eyebrow">Reliability &amp; edge cases</p>
+            <h2 id="reliability-title">Designing for what happens when things go wrong.</h2>
+          </div>
+        </div>
+
+        <div class="reliability-grid">
+          <article>
+            <h3>Unknown RFID</h3>
+            <p><strong>Response:</strong> “Access Denied / Unknown Card” with a stronger alert. No normal attendance
+              record is created.</p>
+          </article>
+          <article>
+            <h3>Lost or damaged card</h3>
+            <p><strong>Response:</strong> Deactivate the old RFID UID and register a new UID against the same Student ID
+              so history remains preserved.</p>
+          </article>
+          <article>
+            <h3>Student leaves college</h3>
+            <p><strong>Response:</strong> Deactivate the student instead of deleting them. Historical records remain
+              available.</p>
+          </article>
+          <article>
+            <h3>Internet unavailable</h3>
+            <p><strong>Planned behavior:</strong> Store the scan locally, allow the transaction, warn about unsynced
+              data, then synchronize when connectivity returns.</p>
+          </article>
+          <article>
+            <h3>Capacity reached</h3>
+            <p><strong>Interpretation:</strong> “At Capacity” means the configured capacity has been reached; it does
+              not guarantee that the physical library is actually full.</p>
+          </article>
+          <article>
+            <h3>Multiple visits</h3>
+            <p><strong>Response:</strong> Entry → exit → entry again. Each completed visit becomes its own attendance
+              row.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         STUDENT REGISTRATION / DATA LIFECYCLE
+         ========================================================= -->
+    <section class="section" id="data-management" aria-labelledby="data-management-title">
+      <div class="container">
+        <div class="section-heading">
+          <p class="section-number">15</p>
+          <div>
+            <p class="eyebrow">Data lifecycle</p>
+            <h2 id="data-management-title">Registration is a one-time setup; history stays valuable.</h2>
+          </div>
+        </div>
+
+        <div class="lifecycle">
+          <div>
+            <span>01</span>
+            <h3>Import</h3>
+            <p>Staff can import a student list using Excel/CSV rather than manually entering every student.</p>
+          </div>
+          <div>
+            <span>02</span>
+            <h3>Register</h3>
+            <p>Associate a student's RFID UID with Student ID, name, branch, and relevant information.</p>
+          </div>
+          <div>
+            <span>03</span>
+            <h3>Use</h3>
+            <p>Each scan creates or completes a visit record.</p>
+          </div>
+          <div>
+            <span>04</span>
+            <h3>Deactivate</h3>
+            <p>Lost cards and inactive students are deactivated rather than deleted.</p>
+          </div>
+          <div>
+            <span>05</span>
+            <h3>Preserve</h3>
+            <p>Historical attendance remains linked to the Student ID.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         EVIDENCE / MEDIA
+         ========================================================= -->
+    <section class="section section-alt" id="evidence" aria-labelledby="evidence-title">
+      <div class="container">
+        <div class="section-heading">
+          <p class="section-number">16</p>
+          <div>
+            <p class="eyebrow">Project evidence</p>
+            <h2 id="evidence-title">Show the work, not just the result.</h2>
+            <p>
+              The final version of this page should contain actual project evidence.
+              Replace the placeholders below with photographs, screenshots, diagrams,
+              and short videos as the physical build progresses.
+            </p>
+          </div>
+        </div>
+
+        <div class="evidence-grid">
+          <figure>
+            <div class="media-placeholder tall">
+             <img src="assets/images/testimage.jpg" alt="Test image"> 
+            </div>
+            <figcaption><strong>Digital prototype</strong> — Wokwi simulation showing the RFID/ESP32 environment.
+            </figcaption>
+          </figure>
+          <figure>
+            <div class="media-placeholder tall"><img src="assets/images/testimage.jpg" alt="Test image"> </div>
+            <figcaption><strong>Development environment</strong> — VS Code + PlatformIO project and firmware workflow.
+            </figcaption>
+          </figure>
+          <figure>
+            <div class="media-placeholder tall"><img src="assets/images/testimage.jpg" alt="Test image"></div>
+            <figcaption><strong>Data layer</strong> — Attendance sheet with real entry/exit records.</figcaption>
+          </figure>
+          <figure>
+            <div class="media-placeholder tall"><img src="assets/images/testimage.jpg" alt="Test image"></div>
+            <figcaption><strong>Analytics</strong> — Dashboard and derived library usage information.</figcaption>
+          </figure>
+          <figure>
+            <div class="media-placeholder tall"><img src="assets/images/testimage.jpg" alt="Test image"></div>
+            <figcaption><strong>Physical prototype</strong> — Final ESP32/RFID/LCD/buzzer setup.</figcaption>
+          </figure>
+          <figure>
+            <div class="media-placeholder tall"><img src="assets/gifs/Recording 2026-10-05 095628.gif" alt="Test gif"></div>
+            <figcaption><strong>Interaction demo</strong> — Card scan → feedback → data update.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         FUTURE SCOPE
+         ========================================================= -->
+    <section class="section" id="future" aria-labelledby="future-title">
+      <div class="container">
+        <div class="section-heading">
+          <p class="section-number">17</p>
+          <div>
+            <p class="eyebrow">Future scope</p>
+            <h2 id="future-title">Build Version 1 properly before expanding Version 2.</h2>
+          </div>
+        </div>
+
+        <p class="section-lead">
+          There are many possible directions, but the current priority is to make
+          Version 1 reliable, physically validated, and useful before adding complexity.
+        </p>
+
+        <div class="future-grid">
+          <article>
+            <h3>Mobile access</h3>
+            <p>Bring occupancy and system information into a mobile-friendly experience.</p>
+          </article>
+          <article>
+            <h3>Notifications</h3>
+            <p>Notify authorized users about relevant events or system conditions.</p>
+          </article>
+          <article>
+            <h3>Better authentication</h3>
+            <p>Add stronger role-based identity and access control.</p>
+          </article>
+          <article>
+            <h3>Advanced analytics</h3>
+            <p>Expand usage patterns, trends, reports, and decision-support metrics.</p>
+          </article>
+          <article>
+            <h3>Multiple libraries</h3>
+            <p>Scale the architecture beyond a single library or location.</p>
+          </article>
+          <article>
+            <h3>Face recognition</h3>
+            <p>Explore additional identity verification where appropriate and justified.</p>
+          </article>
+          <article>
+            <h3>Cloud database</h3>
+            <p>Move from spreadsheet-backed storage to a dedicated database as scale demands.</p>
+          </article>
+          <article>
+            <h3>Admin login</h3>
+            <p>Formalize role-based authentication and administration.</p>
+          </article>
+          <article>
+            <h3>Automatic capacity calibration</h3>
+            <p>Explore methods for making occupancy estimates more representative of physical conditions.</p>
+          </article>
+        </div>
+
+        <div class="future-boundary">
+          <strong>Current priority:</strong>
+          physical prototype → offline storage → real-world testing → refinement.
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         ENGINEER PROFILE / CLOSING
+         ========================================================= -->
+    <section class="section closing" id="about-project" aria-labelledby="closing-title">
+      <div class="container">
+        <div class="closing-grid">
+          <div>
+            <p class="eyebrow">What this project says about the builder</p>
+            <h2 id="closing-title">The technology was unfamiliar. The problem was not.</h2>
+          </div>
+          <div>
+            <p>
+              This project represents a way of working: identify a real problem,
+              define what a useful solution should do, learn unfamiliar tools,
+              build small pieces, connect them, debug failures, test the complete
+              workflow, and keep improving it.
+            </p>
+            <ul class="principles">
+              <li>Identify real-world problems and build solutions.</li>
+              <li>Learn unfamiliar technologies quickly when the problem demands them.</li>
+              <li>Integrate hardware, software, and data into one system.</li>
+              <li>Troubleshoot and iterate independently.</li>
+              <li>Take an idea all the way toward a working prototype.</li>
+              <li>Do not let a lack of initial knowledge become the reason not to solve a problem.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- =========================================================
+       FOOTER
+       ========================================================= -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>
+        <strong>Smart Library Management System</strong>
+        <p>Engineering case study • Version 1 • Built by Anuj Kumar</p>
+      </div>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
