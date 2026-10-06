@@ -999,11 +999,11 @@ td.pass::before {
 }
 
 .media-placeholder.tall {
-  min-height: 270px;
+  min-height: 260px;
 }
 .media-placeholder img {
   width: 100%;
-  height: 100%;
+  /* height: 100%; */
   object-fit: cover;
   border-radius: var(--r);
 }
